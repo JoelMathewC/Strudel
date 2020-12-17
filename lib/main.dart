@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:strudel/Screens/Loading.dart';
 import 'package:strudel/AuthenticationSystem/Wrapper.dart';
 
+
 void main() => runApp(App());
 
 class App extends StatefulWidget {
@@ -57,6 +58,12 @@ class _AppState extends State<App> {
       return Loading();
     }
 
-    return Wrapper();
+    return MaterialApp(
+      initialRoute: Wrapper.id,
+      routes: {
+
+        Wrapper.id: (context) => Wrapper(),
+      },
+    );
   }
 }

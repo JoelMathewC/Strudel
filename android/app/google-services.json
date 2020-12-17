@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "193035880407",
+    "firebase_url": "https://strudel-66049.firebaseio.com",
+    "project_id": "strudel-66049",
+    "storage_bucket": "strudel-66049.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:193035880407:android:42aea867f3ca089250ad92",
+        "android_client_info": {
+          "package_name": "com.jmc.strudel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "193035880407-k4026a5uv9ivdudmi2s93btr56m2sgt1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9F0cG2Y3S4vA6LlWj-iYD5giD6nVHOro"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "193035880407-k4026a5uv9ivdudmi2s93btr56m2sgt1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

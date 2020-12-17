@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:strudel/Screens/Loading.dart';
-import 'package:strudel/Auth/Wrapper.dart';
+import 'package:strudel/AuthenticationSystem/Wrapper.dart';
 
 void main() => runApp(App());
 

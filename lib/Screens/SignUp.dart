@@ -43,20 +43,39 @@ class _SignUpState extends State<SignUp> {
               key: _formKey,
               child: Column(
                   children: <Widget>[
-                    SizedBox(height: 30.0),
+                    SizedBox(height: 20.0),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text('Piggy',
+                        Text('Stru',
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 60.0,
                               color: Colors.blue[900]
                           ),
                         ),
-                        Text('Records',
+                        Text('del',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 60.0,
+                            color: Colors.black,
+                          ),),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text('Communicate',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20.0,
+                              color: Colors.blue[900]
+                          ),
+                        ),
+                        Text('Securely.',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.0,
                             color: Colors.black,
                           ),),
                       ],
@@ -156,15 +175,15 @@ class _SignUpState extends State<SignUp> {
                             loading = true;
                           });
                           if (_formKey.currentState.validate()) {
-                            // dynamic result = await _auth
-                            //     .registerWithEmailAndPassword(name,email, password);
-                            // if (result == null) {
-                            //   setState(() {
-                            //     loading = false;
-                            //     error =
-                            //     'Please enter a valid Email Id and corresponding Password';
-                            //   });
-                            // }
+                            dynamic result = await _auth
+                                .registerWithEmailAndPassword(name,email, password);
+                            if (result == null) {
+                              setState(() {
+                                loading = false;
+                                error =
+                                'Please enter a valid Email Id and corresponding Password';
+                              });
+                            }
                           }
                         },
                         child: Text('Sign Up',

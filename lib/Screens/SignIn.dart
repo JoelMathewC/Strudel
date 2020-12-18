@@ -42,20 +42,44 @@ class _SignInState extends State<SignIn> {
                 child: Column(
                     children: <Widget>[
                       SizedBox(height: 30.0,),
-                      Text('Piggy',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 70.0,
-                            color: Colors.blue[900]
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('Stru',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 80.0,
+                                color: Colors.blue[900]
+                            ),
+                          ),
+                          Text('del',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 80.0,
+                              color: Colors.black,
+                            ),),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('Communicate',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20.0,
+                                color: Colors.blue[900]
+                            ),
+                          ),
+                          Text('Securely.',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20.0,
+                              color: Colors.black,
+                            ),),
+                        ],
                       ),
 
-                      Text('Records',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 70.0,
-                          color: Colors.black,
-                        ),),
+
 
                       SizedBox(height: 60.0),
 
@@ -111,15 +135,15 @@ class _SignInState extends State<SignIn> {
                               loading = true;
                             });
                             if (_formKey.currentState.validate()) {
-                              // dynamic result = await _auth
-                              //     .signInWithEmailAndPassword(email, password);
-                              // if (result == null) {
-                              //   setState(() {
-                              //     loading = false;
-                              //     error =
-                              //     'Please enter a valid Email Id and corresponding Password';
-                              //   });
-                              // }
+                              dynamic result = await _auth
+                                  .LoginWithEmailAndPassword(email, password);
+                              if (result == null) {
+                                setState(() {
+                                  loading = false;
+                                  error =
+                                  'Please enter a valid Email Id and corresponding Password';
+                                });
+                              }
                             }
                           },
                           child: Text('Sign In',

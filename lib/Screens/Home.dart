@@ -4,6 +4,7 @@ import 'package:strudel/AuthenticationSystem/Auth.dart';
 import 'package:strudel/Database/ChatDatabase.dart';
 import 'package:strudel/Database/UserDatabase.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:strudel/Database/ChatClass.dart';
 import 'package:strudel/Screens/ChatScreen.dart';
 
 import 'Loading.dart';
@@ -92,7 +93,8 @@ class _HomeState extends State<Home> {
 
             return GestureDetector(
               onTap: (){
-                Navigator.pushNamed(context, ChatScreen.id);
+                ChatClass selectedClass = ChatClass(name: nameOfChats[index],uid: listOfChats[index]);
+                Navigator.pushNamed(context, ChatScreen.id,arguments: selectedClass);
               },
               child: Container(
                 

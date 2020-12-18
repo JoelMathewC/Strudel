@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:strudel/AuthenticationSystem/Auth.dart';
+import 'package:strudel/Database/UserDatabase.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 
 class Home extends StatefulWidget {
   @override
@@ -7,6 +10,16 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
+  List<dynamic> listofChats;
+  @override
+  void initState() {
+    // TODO: implement initState
+    UserDatabase().listAllChats(_auth.currentUser.email).then((value) {
+      listofChats = value;
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,6 +64,7 @@ class _HomeState extends State<Home> {
 
         },
       ),
+      
     );
   }
 }

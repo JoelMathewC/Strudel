@@ -11,4 +11,13 @@ class UserDatabase{
     });
   }
 
+  Future<List<dynamic>> listAllChats(String email) async {
+    List<dynamic> chats_uid;
+    final CollectionReference users = FirebaseFirestore.instance.collection('Users');
+    await users.doc(email).get().then((DocumentSnapshot documentSnapshot){
+      chats_uid = documentSnapshot.data()['Chats'];
+    });
+    return chats_uid;
+  }
+
 }

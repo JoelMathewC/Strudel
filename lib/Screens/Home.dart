@@ -1,8 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:strudel/AuthenticationSystem/Auth.dart';
+import 'package:strudel/Database/ChatDatabase.dart';
 import 'package:strudel/Database/UserDatabase.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+
+import 'Loading.dart';
+
 
 class Home extends StatefulWidget {
   @override
@@ -12,17 +16,26 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
   List<dynamic> listofChats;
+  bool loading = true;
   @override
   void initState() {
     // TODO: implement initState
     UserDatabase().listAllChats(_auth.currentUser.email).then((value) {
-      listofChats = value;
+      setState(() {
+        listofChats = value; //Works
+        loading = false;
+      });
+
+      // ChatDatabase().returnChatName(listofChats[0]).then((value){
+      //   print(value);
+      // });
     });
+
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return loading ? Loading(): Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Row(
@@ -64,7 +77,13 @@ class _HomeState extends State<Home> {
 
         },
       ),
-      
+      body: ListView.builder(
+          itemCount: listofChats.length,
+          itemBuilder: (context,index){
+            return Container(
+
+            );
+      }),
     );
   }
 }

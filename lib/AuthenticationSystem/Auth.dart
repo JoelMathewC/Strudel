@@ -1,6 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:strudel/Database/UserDatabase.dart';
 
 class AuthServices{
+
+
+
 
   final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
 
@@ -11,6 +15,9 @@ class AuthServices{
   Future registerWithEmailAndPassword(String name,String email,String password) async {
     try{
       auth.UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      await UserDatabase().createUser(email, name);
+
+
       return result.user;
     }catch(e){
       print(e.toString());

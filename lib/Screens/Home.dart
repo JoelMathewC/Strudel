@@ -15,7 +15,7 @@ class _HomeState extends State<Home> {
         title: Row(
 
           children: <Widget>[
-            SizedBox(width:10.0),
+            SizedBox(width:5.0),
             Text('Stru',
               style: TextStyle(
                   fontWeight: FontWeight.bold,

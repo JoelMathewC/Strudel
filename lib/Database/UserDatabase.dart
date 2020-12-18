@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:flutter/cupertino.dart';
 
 
 class UserDatabase{
@@ -18,6 +20,15 @@ class UserDatabase{
       chats_uid = documentSnapshot.data()['Chats'];
     });
     return chats_uid;
+  }
+
+  Future<dynamic> returnName() async{
+    String email = auth.FirebaseAuth.instance.currentUser.email;
+    String name;
+    await users.doc(email).get().then((DocumentSnapshot documentSnapshot){
+      name = documentSnapshot.data()['Name'];
+    });
+    return name;
   }
 
 }

@@ -24,6 +24,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return loading ? Loading() : Scaffold(
+
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0.0,
@@ -41,7 +42,7 @@ class _SignUpState extends State<SignUp> {
             padding: const EdgeInsets.fromLTRB(39.0, 70.0, 38.0, 0.0),
             child: Form(
               key: _formKey,
-              child: Column(
+              child: ListView(
                   children: <Widget>[
                     SizedBox(height: 20.0),
                     Row(

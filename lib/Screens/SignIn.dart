@@ -39,7 +39,7 @@ class _SignInState extends State<SignIn> {
               padding: const EdgeInsets.fromLTRB(40.0, 90.0, 30.0, 0.0),
               child: Form(
                 key: _formKey,
-                child: Column(
+                child: ListView(
                     children: <Widget>[
                       SizedBox(height: 30.0,),
                       Row(

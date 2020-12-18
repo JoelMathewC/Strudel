@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:strudel/Screens/ChatScreen.dart';
 import 'package:strudel/Screens/Loading.dart';
 import 'package:strudel/AuthenticationSystem/Wrapper.dart';
 
@@ -61,7 +62,7 @@ class _AppState extends State<App> {
     return MaterialApp(
       initialRoute: Wrapper.id,
       routes: {
-
+        ChatScreen.id: (context) => ChatScreen(),
         Wrapper.id: (context) => Wrapper(),
       },
     );

@@ -4,6 +4,7 @@ import 'package:strudel/AuthenticationSystem/Auth.dart';
 import 'package:strudel/Database/ChatDatabase.dart';
 import 'package:strudel/Database/UserDatabase.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:strudel/Screens/ChatScreen.dart';
 
 import 'Loading.dart';
 
@@ -15,16 +16,24 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
-  List<dynamic> listofChats;
+  List<dynamic> listOfChats;
+  List<dynamic> nameOfChats;
   bool loading = true;
   @override
   void initState() {
     // TODO: implement initState
     UserDatabase().listAllChats(_auth.currentUser.email).then((value) {
-      setState(() {
-        listofChats = value; //Works
-        loading = false;
-      });
+
+        listOfChats = value; //Works
+        ChatDatabase().returnChatName(listOfChats).then((value) {
+          setState(() {
+            nameOfChats = value;
+            print(nameOfChats);
+            loading = false;
+          });
+        });
+
+
 
       // ChatDatabase().returnChatName(listofChats[0]).then((value){
       //   print(value);
@@ -78,10 +87,48 @@ class _HomeState extends State<Home> {
         },
       ),
       body: ListView.builder(
-          itemCount: listofChats.length,
+          itemCount: nameOfChats.length,
           itemBuilder: (context,index){
-            return Container(
 
+            return GestureDetector(
+              onTap: (){
+                Navigator.pushNamed(context, ChatScreen.id);
+              },
+              child: Container(
+                
+                decoration: BoxDecoration(
+                  color: Color(0xfff2f9f3),
+                  border: Border(
+                    top: BorderSide(
+                      width: 2.0,
+                      color: Colors.blue[900],
+                    ),
+                  ),
+                ),
+                padding: EdgeInsets.symmetric(
+                    horizontal: 10.0, vertical: 20.0),
+                margin: EdgeInsets.only(
+                    left: 20, right: 20, bottom: 10, top: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          nameOfChats[index],
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.blue[900],
+                              fontWeight: FontWeight.bold),
+                        ),
+
+                      ],
+                    ),
+
+                  ],
+                ),
+              ),
             );
       }),
     );

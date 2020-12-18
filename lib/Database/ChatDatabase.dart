@@ -4,11 +4,17 @@ class ChatDatabase{
 
     final CollectionReference chats = FirebaseFirestore.instance.collection('Chats');
 
-    Future<String> returnChatName(String uid) async {  //Works
+    Future<List<String>> returnChatName(List<dynamic> uids) async {  //Works
+      List<String> names = [];
       String name;
-      await chats.doc(uid).get().then((DocumentSnapshot documentSnapshot) {
+
+      for (String uid in uids){
+        await chats.doc(uid).get().then((DocumentSnapshot documentSnapshot) {
           name = documentSnapshot.data()['Name'];
-      });
-      return name;
+          names.add(name);
+        });
+      }
+
+      return names;
     }
 }

@@ -26,4 +26,13 @@ class ChatDatabase{
         'TimeStamp': message.time,
       });
     }
+
+    Future<dynamic> createNewChat(String groupName, List<dynamic> participants) async {
+      String id = chats.doc().id;
+      await chats.doc(id).set({
+        'Name': groupName,
+        'Participants': participants,
+      });
+      return id;
+    }
 }

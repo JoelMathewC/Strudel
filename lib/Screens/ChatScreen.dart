@@ -65,139 +65,141 @@ class _ChatScreenState extends State<ChatScreen> {
                   color: Colors.white,
                 ),),
             ),
-            body: ListView(
-              //mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                SizedBox(height: height - 150,
-                    //Covers everything from app bar till the input position
-                    width: width,
-                    child: Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: ListView.builder(
+            body: SingleChildScrollView(
+              child: Column(
+                //mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  SizedBox(height: height - 150,
+                      //Covers everything from app bar till the input position
+                      width: width,
+                      child: Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: ListView.builder(
 
-                        reverse: true,
-                          itemCount: snapshot.data.documents.length,
-                          itemBuilder: (context, index) {
-                            DocumentSnapshot doc_snap = snapshot.data.documents[index];
-                            MessageClass message = MessageClass(message: doc_snap['Message'],time: doc_snap['TimeStamp'],messageOwner: doc_snap['Owner']);
-                            if (message.messageOwner == name) {
-                              return Column(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15.0)),
-                                        border: Border.all(
-                                            color: Colors.blue[900],
-                                            width: 3.0),
-                                      ),
-                                      alignment: Alignment.center,
+                          reverse: true,
+                            itemCount: snapshot.data.documents.length,
+                            itemBuilder: (context, index) {
+                              DocumentSnapshot doc_snap = snapshot.data.documents[index];
+                              MessageClass message = MessageClass(message: doc_snap['Message'],time: doc_snap['TimeStamp'],messageOwner: doc_snap['Owner']);
+                              if (message.messageOwner == name) {
+                                return Column(
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15.0)),
+                                          border: Border.all(
+                                              color: Colors.blue[900],
+                                              width: 3.0),
+                                        ),
+                                        alignment: Alignment.center,
 
-                                      width: (width / 2) - 10,
-                                      child: Padding(
-                                        padding: EdgeInsets.all(10.0),
-                                        child: Text(
-                                          message.message, style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 15.0,
-                                        ),),
-                                      ),
-
-                                    ),
-                                  ),
-
-                                  SizedBox(height: 10.0,)
-                                ],
-                              );
-                            }
-                            else
-                              return Column(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15.0)),
-                                        border: Border.all(color: Colors.grey,
-                                            width: 3.0),
-                                      ),
-                                      alignment: Alignment.center,
-
-                                      width: (width / 2) - 10,
-                                      child: Padding(
-                                        padding: EdgeInsets.all(10.0),
-                                        child: Text(
-                                          message.message, style: TextStyle(
+                                        width: (width / 2) - 10,
+                                        child: Padding(
+                                          padding: EdgeInsets.all(10.0),
+                                          child: Text(
+                                            message.message, style: TextStyle(
                                             color: Colors.black,
-                                            fontSize: 15.0
-                                        ),),
+                                            fontSize: 15.0,
+                                          ),),
+                                        ),
+
                                       ),
                                     ),
-                                  ),
-                                  Align(
-                                    child: Text(message.messageOwner),
-                                    alignment: Alignment.bottomLeft,
-                                  ),
-                                  SizedBox(height: 10.0,)
-                                ],
-                              );
-                          }),
-                    )
-                ),
 
+                                    SizedBox(height: 10.0,)
+                                  ],
+                                );
+                              }
+                              else
+                                return Column(
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15.0)),
+                                          border: Border.all(color: Colors.grey,
+                                              width: 3.0),
+                                        ),
+                                        alignment: Alignment.center,
 
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 50,
-                        width: (width - 80),
-                        child: TextField(
-                          controller: messageController,
-                          decoration: InputDecoration(
-                              hintText: 'Type Something...',
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.black, width: 2.0)
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.black, width: 2.0)
-                              )
-                          ),
-
-                        ),
-                      ),
-                      SizedBox(width: 10.0),
-                      SizedBox(
-                        height: 50,
-                        width: 50,
-                        child: RawMaterialButton(onPressed: () {
-                          MessageClass messageToSend = MessageClass(message: messageController.text,messageOwner: name,time: Timestamp.fromDate(DateTime.now()));
-                          messageController.clear();
-                          ChatDatabase().sendMessage(messageToSend, thisChat.uid);
-                        },
-                            elevation: 2.0,
-                            fillColor: Colors.blue[900],
-                            child: Icon(Icons.send, size: 25,
-                              color: Colors.white,
-                            ),
-                            padding: EdgeInsets.all(0.0),
-                            shape: CircleBorder()
-                        ),
+                                        width: (width / 2) - 10,
+                                        child: Padding(
+                                          padding: EdgeInsets.all(10.0),
+                                          child: Text(
+                                            message.message, style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 15.0
+                                          ),),
+                                        ),
+                                      ),
+                                    ),
+                                    Align(
+                                      child: Text(message.messageOwner),
+                                      alignment: Alignment.bottomLeft,
+                                    ),
+                                    SizedBox(height: 10.0,)
+                                  ],
+                                );
+                            }),
                       )
-                    ],
                   ),
-                ),
 
-              ],
+
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 50,
+                          width: (width - 80),
+                          child: TextField(
+                            controller: messageController,
+                            decoration: InputDecoration(
+                                hintText: 'Type Something...',
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 2.0)
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 2.0)
+                                )
+                            ),
+
+                          ),
+                        ),
+                        SizedBox(width: 10.0),
+                        SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: RawMaterialButton(onPressed: () {
+                            MessageClass messageToSend = MessageClass(message: messageController.text,messageOwner: name,time: Timestamp.fromDate(DateTime.now()));
+                            messageController.clear();
+                            ChatDatabase().sendMessage(messageToSend, thisChat.uid);
+                          },
+                              elevation: 2.0,
+                              fillColor: Colors.blue[900],
+                              child: Icon(Icons.send, size: 25,
+                                color: Colors.white,
+                              ),
+                              padding: EdgeInsets.all(0.0),
+                              shape: CircleBorder()
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+
+                ],
+              ),
             ),
 
 

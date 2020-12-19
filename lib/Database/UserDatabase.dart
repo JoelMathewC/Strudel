@@ -31,4 +31,19 @@ class UserDatabase{
     return name;
   }
 
+  Future<dynamic> getName(String id) async {
+
+    String name;
+
+    DocumentReference doc_ref = users.doc(id);
+
+    if(doc_ref != null) {
+      await users.doc(id).get().then((DocumentSnapshot documentSnapshot) {
+        name = documentSnapshot.data()['Name'];
+      });
+    }
+
+    return name;
+  }
+
 }

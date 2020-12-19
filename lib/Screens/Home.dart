@@ -5,6 +5,7 @@ import 'package:strudel/Database/ChatDatabase.dart';
 import 'package:strudel/Database/UserDatabase.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:strudel/Database/ChatClass.dart';
+import 'package:strudel/Screens/AddChatScreen.dart';
 import 'package:strudel/Screens/ChatScreen.dart';
 
 import 'Loading.dart';
@@ -84,7 +85,7 @@ class _HomeState extends State<Home> {
         child: Icon(Icons.add),
         backgroundColor: Colors.blue[900],
         onPressed: (){
-
+          Navigator.pushNamed(context, AddChatScreen.id);
         },
       ),
       body: ListView.builder(

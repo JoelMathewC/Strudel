@@ -4,6 +4,8 @@ import 'package:strudel/Screens/ChatScreen.dart';
 import 'package:strudel/Screens/Loading.dart';
 import 'package:strudel/AuthenticationSystem/Wrapper.dart';
 
+import 'package:strudel/Screens/AddChatScreen.dart';
+
 
 void main() => runApp(App());
 
@@ -64,6 +66,7 @@ class _AppState extends State<App> {
       routes: {
         ChatScreen.id: (context) => ChatScreen(),
         Wrapper.id: (context) => Wrapper(),
+        AddChatScreen.id: (context) => AddChatScreen(),
       },
     );
   }

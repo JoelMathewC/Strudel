@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:strudel/Database/ChatClass.dart';
+import 'package:strudel/Database/UserDatabase.dart';
 
 class ChatDatabase{
 
@@ -27,12 +28,17 @@ class ChatDatabase{
       });
     }
 
-    Future<dynamic> createNewChat(String groupName, List<dynamic> participants) async {
-      String id = chats.doc().id;
+    Future<void> createNewChat(dynamic groupName, List<dynamic> participants,List<dynamic> participants_id) async {
+      dynamic id = chats.doc().id;
       await chats.doc(id).set({
         'Name': groupName,
         'Participants': participants,
       });
-      return id;
+      await addChatToUsers(participants_id,id);
+    }
+    Future<void> addChatToUsers(List<dynamic> participants_id,dynamic chat_id) async {
+      for(dynamic id in participants_id){
+        await UserDatabase().addChatToUser(id,chat_id);
+      }
     }
 }

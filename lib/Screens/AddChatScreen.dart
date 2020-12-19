@@ -3,6 +3,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:strudel/Database/ChatDatabase.dart';
 import 'package:strudel/Database/UserDatabase.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:strudel/Screens/Home.dart';
 import 'package:strudel/Screens/Loading.dart';
 
 
@@ -18,7 +19,7 @@ class _AddChatScreenState extends State<AddChatScreen> {
   final nameController = TextEditingController();
   final userAddController = TextEditingController();
 
-
+  bool loading = false;
 
   @override
   void dispose() {
@@ -27,8 +28,8 @@ class _AddChatScreenState extends State<AddChatScreen> {
     userAddController.dispose();
     super.dispose();
   }
-  List<String> participants = [];
-  List<String> participants_id = [];
+  List<dynamic> participants = [];
+  List<dynamic> participants_id = [];
 
 
 
@@ -36,7 +37,7 @@ class _AddChatScreenState extends State<AddChatScreen> {
   Widget build(BuildContext context) {
     double height = MediaQuery. of(context). size. height;
     double width = MediaQuery. of(context). size. width;
-    return Scaffold(
+    return loading? Loading(): Scaffold(
       appBar: AppBar(
         elevation: 0.0,
         backgroundColor: Colors.blue[900],
@@ -46,17 +47,31 @@ class _AddChatScreenState extends State<AddChatScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-         if(nameController.text == null){
+         if(nameController.text == null || nameController.text == ""){
            Alert(
              context: context,
-             title: 'A name has to be given to the group',
+             title: 'A name has to be given to the conversation',
              buttons: [],
              style: AlertStyle(titleStyle: TextStyle(color: Colors.red)),
            ).show();
           }
+         else if(participants.isEmpty){
+           Alert(
+             context: context,
+             title: 'No members have been added to the conversation',
+             buttons: [],
+             style: AlertStyle(titleStyle: TextStyle(color: Colors.red)),
+           ).show();
+         }
          else{
-            await ChatDatabase().createNewChat(nameController.text, participants);
-
+           dynamic name = await UserDatabase().returnName();
+           participants_id.add(auth.FirebaseAuth.instance.currentUser.email);
+           participants.add(name);
+           setState(() {
+             loading = true;
+           });
+            await ChatDatabase().createNewChat(nameController.text, participants,participants_id);
+           Navigator.pop(context);
          }
         },
         backgroundColor: Colors.blue[900],
@@ -156,7 +171,7 @@ class _AddChatScreenState extends State<AddChatScreen> {
                           }
                           else{
 
-                            String user = await UserDatabase().getName(userAddController.text);
+                            dynamic user = await UserDatabase().getName(userAddController.text);
                             if(user != null) {
                               Navigator.pop(context);
                               setState(() {

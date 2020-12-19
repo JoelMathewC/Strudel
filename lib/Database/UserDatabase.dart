@@ -36,14 +36,28 @@ class UserDatabase{
     String name;
 
     DocumentReference doc_ref = users.doc(id);
-
+    print(doc_ref);
     if(doc_ref != null) {
       await users.doc(id).get().then((DocumentSnapshot documentSnapshot) {
         name = documentSnapshot.data()['Name'];
       });
     }
-
+    print(name);
     return name;
+  }
+
+  Future<void> addChatToUser(dynamic id,dynamic chat_id) async{
+    List<dynamic> chats = [];
+    dynamic name;
+    await users.doc(id).get().then((DocumentSnapshot documentSnapshot){
+      chats = documentSnapshot.data()['Chats'];
+      name = documentSnapshot.data()['Name'];
+    });
+    chats.add(chat_id);
+    await users.doc(id).set({
+      'Chats': chats,
+      'Name' : name
+    });
   }
 
 }

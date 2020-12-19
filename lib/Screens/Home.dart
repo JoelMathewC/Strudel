@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:strudel/AuthenticationSystem/Auth.dart';
@@ -12,128 +13,127 @@ import 'Loading.dart';
 
 
 class Home extends StatefulWidget {
+  static String id = 'Home';
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
   auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
-  List<dynamic> listOfChats;
-  List<dynamic> nameOfChats;
-  bool loading = true;
-  @override
-  void initState() {
-    // TODO: implement initState
-    UserDatabase().listAllChats(_auth.currentUser.email).then((value) {
-
-        listOfChats = value; //Works
-        ChatDatabase().returnChatName(listOfChats).then((value) {
-          setState(() {
-            nameOfChats = value;
-            print(nameOfChats);
-            loading = false;
-          });
-        });
+  List<dynamic> listOfChats = [];
+  List<dynamic> nameOfChats = [];
 
 
 
-      // ChatDatabase().returnChatName(listofChats[0]).then((value){
-      //   print(value);
-      // });
-    });
-
-    super.initState();
-  }
   @override
   Widget build(BuildContext context) {
-    return loading ? Loading(): Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Row(
+    return  StreamBuilder(
+      stream: FirebaseFirestore.instance.collection('Users').doc(auth.FirebaseAuth.instance.currentUser.email).snapshots(),
+      builder: (context,snapshot){
+        if(snapshot.data == null)
+          return Loading();
 
-          children: <Widget>[
-            SizedBox(width:5.0),
-            Text('Stru',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30.0,
-                  color: Colors.blue[900]
-              ),
-            ),
-            Text('del',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 30.0,
-                color: Colors.black,
-              ),),
-          ],
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0.0,
-        actions: <Widget>[
-          FlatButton(
-            child: Text('SignOut',
-            style: TextStyle(
-              fontSize: 15.0
-            ),),
-            onPressed: (){
-              AuthServices().signOut();
-          }, )
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        backgroundColor: Colors.blue[900],
-        onPressed: (){
-          Navigator.pushNamed(context, AddChatScreen.id);
-        },
-      ),
-      body: ListView.builder(
-          itemCount: nameOfChats.length,
-          itemBuilder: (context,index){
+        else {
+          listOfChats = snapshot.data['Chats'];
 
-            return GestureDetector(
-              onTap: (){
-                ChatClass selectedClass = ChatClass(name: nameOfChats[index],uid: listOfChats[index]);
-                Navigator.pushNamed(context, ChatScreen.id,arguments: selectedClass);
-              },
-              child: Container(
-                
-                decoration: BoxDecoration(
-                  color: Color(0xfff2f9f3),
-                  border: Border(
-                    top: BorderSide(
-                      width: 2.0,
-                      color: Colors.blue[900],
+          ChatDatabase().returnChatName(listOfChats).then((value){
+            setState(() {
+              nameOfChats = value;
+            });
+
+          });
+          return Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              title: Row(
+
+                children: <Widget>[
+                  SizedBox(width: 5.0),
+                  Text('Stru',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30.0,
+                        color: Colors.blue[900]
                     ),
                   ),
-                ),
-                padding: EdgeInsets.symmetric(
-                    horizontal: 10.0, vertical: 20.0),
-                margin: EdgeInsets.only(
-                    left: 20, right: 20, bottom: 10, top: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          nameOfChats[index],
-                          style: TextStyle(
-                              fontSize: 20.0,
-                              color: Colors.blue[900],
-                              fontWeight: FontWeight.bold),
-                        ),
-
-                      ],
-                    ),
-
-                  ],
-                ),
+                  Text('del',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30.0,
+                      color: Colors.black,
+                    ),),
+                ],
               ),
-            );
-      }),
-    );
+              backgroundColor: Colors.white,
+              elevation: 0.0,
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('SignOut',
+                    style: TextStyle(
+                        fontSize: 15.0
+                    ),),
+                  onPressed: () {
+                    AuthServices().signOut();
+                  },)
+              ],
+            ),
+            floatingActionButton: FloatingActionButton(
+              child: Icon(Icons.add),
+              backgroundColor: Colors.blue[900],
+              onPressed: () {
+                Navigator.pushNamed(context, AddChatScreen.id);
+              },
+            ),
+            body: ListView.builder(
+                itemCount: nameOfChats.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      ChatClass selectedClass = ChatClass(
+                          name: nameOfChats[index], uid: listOfChats[index]);
+                      Navigator.pushNamed(
+                          context, ChatScreen.id, arguments: selectedClass);
+                    },
+                    child: Container(
+
+                      decoration: BoxDecoration(
+                        color: Color(0xfff2f9f3),
+                        border: Border(
+                          top: BorderSide(
+                            width: 2.0,
+                            color: Colors.blue[900],
+                          ),
+                        ),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10.0, vertical: 20.0),
+                      margin: EdgeInsets.only(
+                          left: 20, right: 20, bottom: 10, top: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                nameOfChats[index],
+                                style: TextStyle(
+                                    fontSize: 20.0,
+                                    color: Colors.blue[900],
+                                    fontWeight: FontWeight.bold),
+                              ),
+
+                            ],
+                          ),
+
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+
+          );
+        }
+      });
   }
 }

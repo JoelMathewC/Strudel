@@ -40,9 +40,15 @@ class _AddChatScreenState extends State<AddChatScreen> {
     return loading? Loading(): Scaffold(
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: Colors.blue[900],
+        backgroundColor: Theme.of(context).canvasColor,
         title: Text(
-          'Start a new Conversation'
+          'Start a new Conversation',
+          style: TextStyle(
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
+        iconTheme: IconThemeData(
+          color: Theme.of(context).primaryColor,
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -74,7 +80,7 @@ class _AddChatScreenState extends State<AddChatScreen> {
            Navigator.pop(context);
          }
         },
-        backgroundColor: Colors.blue[900],
+        backgroundColor: Theme.of(context).accentColor,
         child: Icon(Icons.check),
       ),
       body: SingleChildScrollView(
@@ -83,7 +89,7 @@ class _AddChatScreenState extends State<AddChatScreen> {
             SizedBox(
               height: 60,
               child: Container(
-                color: Colors.blue[900],
+                color: Theme.of(context).canvasColor,
                 child: Padding(
                   padding: EdgeInsets.all(10.0),
                   child: Row(
@@ -103,18 +109,23 @@ class _AddChatScreenState extends State<AddChatScreen> {
                         width: (width - 150),
                         child: TextField(
                           controller: nameController,
-
+                          style: TextStyle(
+                            color: Colors.white
+                          ),
                           decoration: InputDecoration(
                             filled: true,
-                              fillColor: Colors.white,
+                              fillColor: Theme.of(context).primaryColorDark,
                               hintText: 'Name your Conversation',
+                              hintStyle: TextStyle(
+                                color: Colors.grey,
+                              ),
                               enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      color: Colors.white, width: 2.0)
+                                      color: Theme.of(context).primaryColorDark, width: 2.0)
                               ),
                               focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      color: Colors.white, width: 2.0)
+                                      color: Theme.of(context).accentColor, width: 2.0)
                               )
                           ),
 
@@ -146,7 +157,7 @@ class _AddChatScreenState extends State<AddChatScreen> {
                   ),
                   buttons: [
                     DialogButton(
-                      color: Colors.blue[900],
+                      color: Theme.of(context).accentColor,
                         child: Text(
                       'SUBMIT',style: TextStyle(
                       color: Colors.white
@@ -213,7 +224,7 @@ class _AddChatScreenState extends State<AddChatScreen> {
                         ),
                     ),
                   ),
-                  color: Colors.blue[900],),
+                  color: Theme.of(context).accentColor,),
               ),
             ),
             SizedBox(height: 20.0,),
@@ -229,11 +240,11 @@ class _AddChatScreenState extends State<AddChatScreen> {
                     return Container(
 
                         decoration: BoxDecoration(
-                          color: Color(0xfff2f9f3),
+                          color: Theme.of(context).primaryColorDark,
                           border: Border(
                             top: BorderSide(
                               width: 2.0,
-                              color: Colors.blue[900],
+                              color: Theme.of(context).accentColor,
                             ),
                           ),
                         ),
@@ -251,7 +262,7 @@ class _AddChatScreenState extends State<AddChatScreen> {
                                   participants[index],
                                   style: TextStyle(
                                       fontSize: 20.0,
-                                      color: Colors.blue[900],
+                                      color: Theme.of(context).accentColor,
                                       fontWeight: FontWeight.bold),
                                 ),
 
@@ -271,7 +282,7 @@ class _AddChatScreenState extends State<AddChatScreen> {
                                   elevation: 2.0,
                                   fillColor: Colors.blue[900],
                                   child: Icon(Icons.cancel, size: 25,
-                                    color: Colors.white,
+                                    color: Theme.of(context).primaryColorDark,
                                   ),
                                   padding: EdgeInsets.all(0.0),
                                   shape: CircleBorder()

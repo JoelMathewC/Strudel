@@ -21,6 +21,9 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery. of(context). size. height;
+    print(height);
+    double width = MediaQuery. of(context). size. width;
     return loading ? Loading() : Scaffold(
 
       backgroundColor: Theme.of(context).canvasColor,
@@ -86,13 +89,13 @@ class _SignInState extends State<SignIn> {
 
 
 
-                      SizedBox(height: 60.0),
+                      SizedBox(height: height - 396 - 230), //350 - 580 = 230
 
                       TextFormField(
                           decoration: InputDecoration(
                               hintText: 'Email Address',
                               hintStyle: TextStyle(
-                                color: Theme.of(context).primaryColor,
+                                color: Colors.grey,
                               ),
                               fillColor: Theme.of(context).primaryColorDark,
                               filled: true,
@@ -118,7 +121,7 @@ class _SignInState extends State<SignIn> {
                           decoration: InputDecoration(
                               hintText: 'Password',
                               hintStyle: TextStyle(
-                              color: Theme.of(context).primaryColor,
+                              color: Colors.grey,
                       ),
                               fillColor: Theme.of(context).primaryColorDark,
                               filled: true,

@@ -69,7 +69,7 @@ class _AppState extends State<App> {
         canvasColor: Color(0xff121212), //grey base for dark mode
         primaryColor: Colors.white,
         accentColor: Color(0xff2f55d1),
-        primaryColorDark: Color(0xff121212),
+        primaryColorDark: Color(0xff1a1a1a),
       ),
       routes: {
         ChatScreen.id: (context) => ChatScreen(),

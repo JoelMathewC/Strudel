@@ -30,12 +30,15 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return loading? Loading():Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue[900],
+        backgroundColor: Theme.of(context).canvasColor,
         title: Text(
           'Settings',
           style: TextStyle(
-            color: Colors.white,
+            color: Theme.of(context).primaryColor,
           ),
+        ),
+        iconTheme: IconThemeData(
+          color: Theme.of(context).primaryColor,
         ),
       ),
       body: SingleChildScrollView(
@@ -44,11 +47,17 @@ class _SettingsPageState extends State<SettingsPage> {
             Row(
               children: <Widget>[
                 Text(
-                  'Name:'
+                  'Name:',
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
                 SizedBox(width: 10,),
                 Text(
-                  name
+                  name,
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                  ),
                 )
               ],
             ),
@@ -57,7 +66,11 @@ class _SettingsPageState extends State<SettingsPage> {
               AuthServices().signOut();
               Navigator.pop(context);
             },
-            child: Text('SignOut'),)
+              color: Theme.of(context).accentColor,
+            child: Text('SignOut',
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+            ),),)
           ],
         ),
       ),

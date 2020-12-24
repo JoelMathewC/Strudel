@@ -22,12 +22,17 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return loading ? Loading() : Scaffold(
+
+      backgroundColor: Theme.of(context).canvasColor,
           appBar: AppBar(
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).canvasColor,
             elevation: 0.0,
             actions: <Widget>[
               FlatButton(
-                child: Text("Sign Up"),
+                child: Text("Sign Up",
+                style: TextStyle(
+                  color: Colors.white,
+                ),),
                 onPressed: () {
                   widget.toggleView();
                 },
@@ -49,14 +54,14 @@ class _SignInState extends State<SignIn> {
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 80.0,
-                                color: Colors.blue[900]
+                                color: Theme.of(context).primaryColor
                             ),
                           ),
                           Text('del',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 80.0,
-                              color: Colors.black,
+                              color: Theme.of(context).accentColor,
                             ),),
                         ],
                       ),
@@ -67,14 +72,14 @@ class _SignInState extends State<SignIn> {
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20.0,
-                                color: Colors.blue[900]
+                                color:  Theme.of(context).primaryColor
                             ),
                           ),
                           Text('Securely.',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 20.0,
-                              color: Colors.black,
+                              color: Theme.of(context).accentColor,
                             ),),
                         ],
                       ),
@@ -86,13 +91,18 @@ class _SignInState extends State<SignIn> {
                       TextFormField(
                           decoration: InputDecoration(
                               hintText: 'Email Address',
+                              hintStyle: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              fillColor: Theme.of(context).primaryColorDark,
+                              filled: true,
                               enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      color: Colors.white, width: 2.0)
+                                      color: Theme.of(context).primaryColorDark, width: 2.0)
                               ),
                               focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      color: Colors.black, width: 2.0)
+                                      color:  Theme.of(context).accentColor, width: 2.0)
                               )
                           ),
                           validator: (val) =>
@@ -107,13 +117,18 @@ class _SignInState extends State<SignIn> {
                       TextFormField(
                           decoration: InputDecoration(
                               hintText: 'Password',
+                              hintStyle: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                      ),
+                              fillColor: Theme.of(context).primaryColorDark,
+                              filled: true,
                               enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      color: Colors.white, width: 2.0)
+                                      color: Theme.of(context).primaryColorDark, width: 2.0)
                               ),
                               focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      color: Colors.black, width: 2.0)
+                                      color:  Theme.of(context).accentColor, width: 2.0)
                               )
                           ),
                           validator: (val) =>
@@ -150,7 +165,7 @@ class _SignInState extends State<SignIn> {
                               style: TextStyle(
                                 color: Colors.white,
                               )),
-                          color: Colors.blue[900]
+                          color: Theme.of(context).accentColor,
 
                       ),
                       SizedBox(height: 20.0),

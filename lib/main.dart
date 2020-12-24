@@ -65,6 +65,12 @@ class _AppState extends State<App> {
 
     return MaterialApp(
       initialRoute: Wrapper.id,
+      theme: ThemeData(
+        canvasColor: Color(0xff121212), //grey base for dark mode
+        primaryColor: Colors.white,
+        accentColor: Color(0xff2f55d1),
+        primaryColorDark: Color(0xff121212),
+      ),
       routes: {
         ChatScreen.id: (context) => ChatScreen(),
         Wrapper.id: (context) => Wrapper(),

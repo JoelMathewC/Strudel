@@ -9,6 +9,8 @@ import 'package:strudel/Screens/AddChatScreen.dart';
 import 'package:strudel/Screens/SettingsPage.dart';
 
 
+
+
 void main() => runApp(App());
 
 class App extends StatefulWidget {
@@ -45,6 +47,7 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     // Show error message if initialization failed
+
     if (_error) {
       return MaterialApp(
           home: Scaffold(
@@ -62,6 +65,8 @@ class _AppState extends State<App> {
 
       return Loading();
     }
+
+
 
     return MaterialApp(
       initialRoute: Wrapper.id,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:strudel/AuthenticationSystem/Auth.dart';
 import 'package:strudel/Screens/Loading.dart';
 
+
 class SignIn extends StatefulWidget {
   final Function toggleView;
   SignIn({this.toggleView});
@@ -21,6 +22,7 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
+
     double height = MediaQuery. of(context). size. height;
     print(height);
     double width = MediaQuery. of(context). size. width;
@@ -92,6 +94,10 @@ class _SignInState extends State<SignIn> {
                       SizedBox(height: height - 396 - 230), //350 - 580 = 230
 
                       TextFormField(
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                          cursorColor: Theme.of(context).accentColor,
                           decoration: InputDecoration(
                               hintText: 'Email Address',
                               hintStyle: TextStyle(
@@ -118,6 +124,10 @@ class _SignInState extends State<SignIn> {
                       ),
                       SizedBox(height: 10.0),
                       TextFormField(
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                          cursorColor: Theme.of(context).accentColor,
                           decoration: InputDecoration(
                               hintText: 'Password',
                               hintStyle: TextStyle(

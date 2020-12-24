@@ -3,6 +3,7 @@ import 'package:strudel/AuthenticationSystem/Auth.dart';
 import 'package:strudel/Screens/Loading.dart';
 
 
+
 class SignUp extends StatefulWidget {
   final Function toggleView;
   SignUp({this.toggleView});
@@ -23,6 +24,7 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
+
     return loading ? Loading() : Scaffold(
 
         appBar: AppBar(
@@ -86,6 +88,10 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(height: 90.0),
 
                     TextFormField(
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                        cursorColor: Theme.of(context).accentColor,
                         decoration: InputDecoration(
                             hintText: 'Name',
                             hintStyle: TextStyle(
@@ -110,6 +116,10 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(height: 10.0),
 
                     TextFormField(
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                        cursorColor: Theme.of(context).accentColor,
                         decoration: InputDecoration(
                             hintText: 'Email Address',
                             hintStyle: TextStyle(
@@ -133,6 +143,10 @@ class _SignUpState extends State<SignUp> {
                     ),
                     SizedBox(height: 10.0),
                     TextFormField(
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                        cursorColor: Theme.of(context).accentColor,
                         decoration: InputDecoration(
                             hintText: 'Password',
                             hintStyle: TextStyle(
@@ -163,6 +177,10 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(height: 10.0),
 
                     TextFormField(
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                        cursorColor: Theme.of(context).accentColor,
                         decoration: InputDecoration(
                             hintText: 'Re-type Password',
                             hintStyle: TextStyle(

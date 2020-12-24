@@ -44,7 +44,7 @@ class _HomeState extends State<Home> {
 
           });
           return Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).canvasColor,
             appBar: AppBar(
               title: Row(
 
@@ -54,23 +54,23 @@ class _HomeState extends State<Home> {
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 30.0,
-                        color: Colors.blue[900]
+                        color: Theme.of(context).primaryColor,
                     ),
                   ),
                   Text('del',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 30.0,
-                      color: Colors.black,
+                      color: Theme.of(context).accentColor,
                     ),),
                 ],
               ),
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).canvasColor,
               elevation: 0.0,
               actions: <Widget>[
                 FlatButton(
                   child: Icon(Icons.settings,
-                  color: Colors.grey,),
+                  color: Theme.of(context).primaryColor,),
                   onPressed: () {
                     Navigator.pushNamed(context, SettingsPage.id);
                   },)
@@ -96,11 +96,11 @@ class _HomeState extends State<Home> {
                     child: Container(
 
                       decoration: BoxDecoration(
-                        color: Color(0xfff2f9f3),
+                        color: Theme.of(context).primaryColorDark,
                         border: Border(
                           top: BorderSide(
                             width: 2.0,
-                            color: Colors.blue[900],
+                            color: Theme.of(context).primaryColor,
                           ),
                         ),
                       ),
@@ -118,7 +118,7 @@ class _HomeState extends State<Home> {
                                 nameOfChats[index],
                                 style: TextStyle(
                                     fontSize: 20.0,
-                                    color: Colors.blue[900],
+                                    color: Theme.of(context).primaryColor,
                                     fontWeight: FontWeight.bold),
                               ),
 

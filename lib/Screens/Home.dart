@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:strudel/Database/ChatClass.dart';
 import 'package:strudel/Screens/AddChatScreen.dart';
 import 'package:strudel/Screens/ChatScreen.dart';
+import 'package:strudel/Screens/SettingsPage.dart';
 
 import 'Loading.dart';
 
@@ -68,12 +69,10 @@ class _HomeState extends State<Home> {
               elevation: 0.0,
               actions: <Widget>[
                 FlatButton(
-                  child: Text('SignOut',
-                    style: TextStyle(
-                        fontSize: 15.0
-                    ),),
+                  child: Icon(Icons.settings,
+                  color: Colors.grey,),
                   onPressed: () {
-                    AuthServices().signOut();
+                    Navigator.pushNamed(context, SettingsPage.id);
                   },)
               ],
             ),

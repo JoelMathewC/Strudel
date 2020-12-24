@@ -6,6 +6,7 @@ import 'package:strudel/Screens/Loading.dart';
 import 'package:strudel/AuthenticationSystem/Wrapper.dart';
 
 import 'package:strudel/Screens/AddChatScreen.dart';
+import 'package:strudel/Screens/SettingsPage.dart';
 
 
 void main() => runApp(App());
@@ -69,6 +70,7 @@ class _AppState extends State<App> {
         Wrapper.id: (context) => Wrapper(),
         AddChatScreen.id: (context) => AddChatScreen(),
         Home.id: (context) => Home(),
+        SettingsPage.id: (context) => SettingsPage(),
       },
     );
   }

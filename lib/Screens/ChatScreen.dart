@@ -56,20 +56,23 @@ class _ChatScreenState extends State<ChatScreen> {
           return Loading();
         else {
           return Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).canvasColor,
             appBar: AppBar(
 
-              backgroundColor: Colors.blue[900],
+              backgroundColor: Theme.of(context).canvasColor,
               title: Text(thisChat.name,
                 style: TextStyle(
                   color: Colors.white,
                 ),),
+              iconTheme: IconThemeData(
+                color: Theme.of(context).primaryColor
+              ),
             ),
             body: SingleChildScrollView(
               child: Column(
                 //mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  SizedBox(height: height - 150,
+                  SizedBox(height: height - 200,
                       //Covers everything from app bar till the input position
                       width: width,
                       child: Padding(
@@ -88,12 +91,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                       alignment: Alignment.centerRight,
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          color: Colors.white,
+                                          color: Theme.of(context).accentColor,
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(15.0)),
-                                          border: Border.all(
-                                              color: Colors.blue[900],
-                                              width: 3.0),
+
                                         ),
                                         alignment: Alignment.center,
 
@@ -102,8 +103,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                           padding: EdgeInsets.all(10.0),
                                           child: Text(
                                             message.message, style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 15.0,
+                                            color: Theme.of(context).primaryColor,
+                                            fontSize: 17.0,
                                           ),),
                                         ),
 
@@ -121,11 +122,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                       alignment: Alignment.centerLeft,
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          color: Colors.white,
+                                          color: Theme.of(context).primaryColorDark,
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(15.0)),
-                                          border: Border.all(color: Colors.grey,
-                                              width: 3.0),
+
                                         ),
                                         alignment: Alignment.center,
 
@@ -134,14 +134,18 @@ class _ChatScreenState extends State<ChatScreen> {
                                           padding: EdgeInsets.all(10.0),
                                           child: Text(
                                             message.message, style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15.0
+                                              color: Theme.of(context).primaryColor,
+                                              fontSize: 17.0
                                           ),),
                                         ),
                                       ),
                                     ),
+                                    SizedBox(height: 5,),
                                     Align(
-                                      child: Text(message.messageOwner),
+                                      child: Text(message.messageOwner,
+                                      style: TextStyle(
+                                        color: Theme.of(context).primaryColor
+                                      ),),
                                       alignment: Alignment.bottomLeft,
                                     ),
                                     SizedBox(height: 10.0,)
@@ -161,16 +165,25 @@ class _ChatScreenState extends State<ChatScreen> {
                           height: 50,
                           width: (width - 80),
                           child: TextField(
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                            ),
                             controller: messageController,
+                            cursorColor: Theme.of(context).accentColor,
                             decoration: InputDecoration(
+                              filled: true,
+                                fillColor: Theme.of(context).primaryColorDark,
                                 hintText: 'Type Something...',
+                                hintStyle: TextStyle(
+                                  color: Colors.grey,
+                                ),
                                 enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                        color: Colors.black, width: 2.0)
+                                        color:Theme.of(context).primaryColorDark, width: 2.0)
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                        color: Colors.black, width: 2.0)
+                                        color: Theme.of(context).accentColor, width: 2.0)
                                 )
                             ),
 
@@ -186,7 +199,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             ChatDatabase().sendMessage(messageToSend, thisChat.uid);
                           },
                               elevation: 2.0,
-                              fillColor: Colors.blue[900],
+                              fillColor: Theme.of(context).accentColor,
                               child: Icon(Icons.send, size: 25,
                                 color: Colors.white,
                               ),

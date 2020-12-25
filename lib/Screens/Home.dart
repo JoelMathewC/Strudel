@@ -78,7 +78,7 @@ class _HomeState extends State<Home> {
             ),
             floatingActionButton: FloatingActionButton(
               child: Icon(Icons.add),
-              backgroundColor: Colors.blue[900],
+              backgroundColor: Theme.of(context).accentColor,
               onPressed: () {
                 Navigator.pushNamed(context, AddChatScreen.id);
               },
@@ -96,13 +96,13 @@ class _HomeState extends State<Home> {
                     child: Container(
 
                       decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColorDark,
-                        border: Border(
-                          top: BorderSide(
-                            width: 2.0,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
+                        color: Theme.of(context).accentColor,
+                        // border: Border(
+                        //   top: BorderSide(
+                        //     width: 2.0,
+                        //     color: Theme.of(context).primaryColor,
+                        //   ),
+                        // ),
                       ),
                       padding: EdgeInsets.symmetric(
                           horizontal: 10.0, vertical: 20.0),

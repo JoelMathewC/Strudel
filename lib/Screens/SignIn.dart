@@ -30,6 +30,7 @@ class _SignInState extends State<SignIn> {
 
       backgroundColor: Theme.of(context).canvasColor,
           appBar: AppBar(
+            brightness: Brightness.dark,
             backgroundColor: Theme.of(context).canvasColor,
             elevation: 0.0,
             actions: <Widget>[

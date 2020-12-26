@@ -46,6 +46,7 @@ class _HomeState extends State<Home> {
           return Scaffold(
             backgroundColor: Theme.of(context).canvasColor,
             appBar: AppBar(
+              brightness: Brightness.dark,
               title: Row(
 
                 children: <Widget>[

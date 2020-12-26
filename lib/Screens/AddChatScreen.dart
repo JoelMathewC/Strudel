@@ -39,6 +39,7 @@ class _AddChatScreenState extends State<AddChatScreen> {
     double width = MediaQuery. of(context). size. width;
     return loading? Loading(): Scaffold(
       appBar: AppBar(
+        brightness: Brightness.dark,
         elevation: 0.0,
         backgroundColor: Theme.of(context).canvasColor,
         title: Text(

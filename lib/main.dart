@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'package:strudel/Screens/ChatScreen.dart';
 import 'package:strudel/Screens/Home.dart';
 import 'package:strudel/Screens/Loading.dart';
@@ -7,6 +8,7 @@ import 'package:strudel/AuthenticationSystem/Wrapper.dart';
 
 import 'package:strudel/Screens/AddChatScreen.dart';
 import 'package:strudel/Screens/SettingsPage.dart';
+
 
 
 
@@ -47,6 +49,10 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     // Show error message if initialization failed
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Color(0xff121212),
+      statusBarIconBrightness: Brightness.light
+    ));
 
     if (_error) {
       return MaterialApp(
@@ -54,6 +60,7 @@ class _AppState extends State<App> {
               appBar: AppBar(
                 backgroundColor: Color(0xff4DD172),
                 title: Text('Something went wrong'),
+                brightness: Brightness.dark,
               ),
               body: Center(
                 child: Text('Are you connected to the Network?'),

@@ -60,7 +60,7 @@ class _ChatScreenState extends State<ChatScreen> {
           return Scaffold(
             backgroundColor: Theme.of(context).canvasColor,
             appBar: AppBar(
-
+              brightness: Brightness.dark,
               backgroundColor: Theme.of(context).canvasColor,
               title: Text(thisChat.name,
                 style: TextStyle(

@@ -30,6 +30,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return loading? Loading():Scaffold(
       appBar: AppBar(
+        brightness: Brightness.dark,
         backgroundColor: Theme.of(context).canvasColor,
         title: Text(
           'Settings',

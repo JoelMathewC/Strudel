@@ -28,6 +28,7 @@ class _SignUpState extends State<SignUp> {
     return loading ? Loading() : Scaffold(
 
         appBar: AppBar(
+          brightness: Brightness.dark,
           backgroundColor: Theme.of(context).canvasColor,
           elevation: 0.0,
           actions: <Widget>[

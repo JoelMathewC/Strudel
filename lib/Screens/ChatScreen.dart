@@ -1,5 +1,7 @@
 
 
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
@@ -20,6 +22,10 @@ class _ChatScreenState extends State<ChatScreen> {
   String name = "";
   List<String> data = ['Hi','Heyya','How do ya do','Imma doing good','Jaco young man how is life fe hasa and is it but beyond the measure of a common man'];
   String prevIndividual = "";
+  String prevDate = "";
+  String currentDate = "";
+  String dateToPrint = "";
+  Widget MessageWidget;
   @override
   void initState() {
     // TODO: implement initState
@@ -54,6 +60,7 @@ class _ChatScreenState extends State<ChatScreen> {
       stream: FirebaseFirestore.instance.collection('Chats').doc(thisChat.uid).collection('Messages').orderBy('TimeStamp',descending: true).snapshots(),
       builder:(context,snapshot){
         prevIndividual = "";
+        prevDate = "";
         if(snapshot.data == null)
           return Loading();
         else {
@@ -84,154 +91,44 @@ class _ChatScreenState extends State<ChatScreen> {
                           reverse: true,
                             itemCount: snapshot.data.documents.length,
                             itemBuilder: (context, index) {
-
                               DocumentSnapshot doc_snap = snapshot.data.documents[index];
                               MessageClass message = MessageClass(message: doc_snap['Message'],time: doc_snap['TimeStamp'],messageOwner: doc_snap['Owner']);
-                              if (message.messageOwner == name) {
-                                prevIndividual = name;
-                                return Column(
-                                  children: [
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context).accentColor,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15.0)),
+                              currentDate = returnDate(message.time);
 
-                                        ),
-                                        alignment: Alignment.center,
-
-                                        width: (width / 2) - 10,
-                                        child: Column(
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: EdgeInsets.fromLTRB(2,7,2,2),
-                                              child: Text(
-                                                message.message, style: TextStyle(
-                                                color: Theme.of(context).primaryColor,
-                                                fontSize: 17.0,
-                                              ),),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.fromLTRB(3,3,5,3),
-                                              child: Align(
-                                                alignment: Alignment.bottomRight,
-                                                child: Text(
-                                                  toDateString(message.time), style: TextStyle(
-                                                  color: Theme.of(context).primaryColor,
-                                                  fontSize: 14.0,
-                                                ),),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-
-                                      ),
-                                    ),
-
-                                    SizedBox(height: 10.0,)
-                                  ],
-                                );
-                              }
-                              else{
-                                if(prevIndividual != message.messageOwner){
-                                  prevIndividual = message.messageOwner;
-                                  return Column(
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Theme.of(context).primaryColorDark,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15.0)),
-
-                                          ),
-                                          alignment: Alignment.center,
-
-                                          width: (width / 2) - 10,
-                                          child: Column(
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.fromLTRB(2,7,2,2),
-                                                child: Text(
-                                                  message.message, style: TextStyle(
-                                                    color: Theme.of(context).primaryColor,
-                                                    fontSize: 17.0
-                                                ),),
-                                              ),
-                                              Padding(
-                                                padding: const  EdgeInsets.fromLTRB(3,3,5,3),
-                                                child: Align(
-                                                  alignment: Alignment.bottomRight,
-                                                  child: Text(
-                                                    toDateString(message.time), style: TextStyle(
-                                                    color: Theme.of(context).primaryColor,
-                                                    fontSize: 14.0,
-                                                  ),),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 5,),
-                                      Align(
-                                        child: Text(message.messageOwner,
-                                          style: TextStyle(
-                                              color: Theme.of(context).primaryColor
-                                          ),),
-                                        alignment: Alignment.bottomLeft,
-                                      ),
-                                      SizedBox(height: 10.0,)
-                                    ],
-                                  );
+                              if (message.messageOwner == name) {  //---------------------Message is Users
+                                 prevIndividual = name;
+                                if(prevDate == "" || prevDate == currentDate){
+                                  prevDate = currentDate;
+                                  return ChatMessage(width: width,message: message,byUser: true,);
                                 }
-                                else
-                                  return Column(
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Theme.of(context).primaryColorDark,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15.0)),
-
-                                          ),
-                                          alignment: Alignment.center,
-
-                                          width: (width / 2) - 10,
-                                          child: Column(
-                                            children: <Widget>[
-                                              Padding(
-                                                padding: EdgeInsets.fromLTRB(2,7,2,2),
-                                                child: Text(
-                                                  message.message, style: TextStyle(
-                                                    color: Theme.of(context).primaryColor,
-                                                    fontSize: 17.0
-                                                ),),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.fromLTRB(3,3,5,3),
-                                                child: Align(
-                                                  alignment: Alignment.bottomRight,
-                                                  child: Text(
-                                                    toDateString(message.time), style: TextStyle(
-                                                    color: Theme.of(context).primaryColor,
-                                                    fontSize: 14.0,
-                                                  ),),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 10.0,)
-                                    ],
-                                  );
+                                else{
+                                   dateToPrint = prevDate;
+                                  prevDate = currentDate;
+                                  return PrintDateDemarcationWithMessage(date: dateToPrint,MessageWidget: ChatMessage(width: width,message: message,byUser: true,),);
+                                }
                               }
+                              else { // ----------------------Message is not Users
+
+                                if (prevIndividual != message.messageOwner) {
+                                  prevIndividual = message.messageOwner;
+                                  MessageWidget = PrintMessageOwner(width: width,message: message,);
+                                }
+                                else {
+                                  MessageWidget = OtherMessage(width: width,message: message,);
+                                }
+
+                                if (prevDate == "" || prevDate == currentDate) {
+                                  prevDate = currentDate;
+                                  return MessageWidget;
+                                }
+                                else {
+                                  dateToPrint = prevDate;
+                                  prevDate = currentDate;
+                                   return PrintDateDemarcationWithMessage(date: dateToPrint,MessageWidget: MessageWidget,);
+                                  }
+                                }
+
+
                             }),
                       )
                   ),
@@ -308,6 +205,223 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 
 
+//Widgets
+
+class UserMessage extends StatefulWidget {
+  double width;
+  MessageClass message;
+  UserMessage({this.width,this.message});
+  @override
+  _UserMessageState createState() => _UserMessageState();
+}
+
+class _UserMessageState extends State<UserMessage> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Align(
+          alignment: Alignment.centerRight,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).accentColor,
+              borderRadius: BorderRadius.all(
+                  Radius.circular(15.0)),
+
+            ),
+            alignment: Alignment.center,
+
+            width: (widget.width / 2) - 10,
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.fromLTRB(2,7,2,2),
+                  child: Text(
+                    widget.message.message, style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 17.0,
+                  ),),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(3,3,5,3),
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      toDateString(widget.message.time), style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 14.0,
+                    ),),
+                  ),
+                )
+              ],
+            ),
+
+          ),
+        ),
+
+        SizedBox(height: 10.0,)
+      ],
+    );
+  }
+}
+
+class OtherMessage extends StatefulWidget {
+  double width;
+  MessageClass message;
+  OtherMessage({this.width,this.message});
+  @override
+  _OtherMessageState createState() => _OtherMessageState();
+}
+
+class _OtherMessageState extends State<OtherMessage> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme
+                  .of(context)
+                  .primaryColorDark,
+              borderRadius: BorderRadius.all(
+                  Radius.circular(15.0)),
+
+            ),
+            alignment: Alignment.center,
+
+            width: (widget.width / 2) - 10,
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                      2, 7, 2, 2),
+                  child: Text(
+                    widget.message.message,
+                    style: TextStyle(
+                        color: Theme
+                            .of(context)
+                            .primaryColor,
+                        fontSize: 17.0
+                    ),),
+                ),
+                Padding(
+                  padding: const EdgeInsets
+                      .fromLTRB(3, 3, 5, 3),
+                  child: Align(
+                    alignment: Alignment
+                        .bottomRight,
+                    child: Text(
+                      toDateString(
+                          widget.message.time),
+                      style: TextStyle(
+                        color: Theme
+                            .of(context)
+                            .primaryColor,
+                        fontSize: 14.0,
+                      ),),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: 10.0,)
+      ],
+    );
+  }
+}
+
+
+
+class ChatMessage extends StatefulWidget {
+  double width;
+  MessageClass message;
+  bool byUser;
+  ChatMessage({this.width,this.message,this.byUser});
+  @override
+  _ChatMessageState createState() => _ChatMessageState();
+}
+
+class _ChatMessageState extends State<ChatMessage> {
+  @override
+  Widget build(BuildContext context) {
+    return widget.byUser? UserMessage(width: widget.width,message: widget.message,):OtherMessage(width: widget.width,message: widget.message,);
+  }
+}
+//END OF CHAT MESSAGE CLASS
+
+class PrintMessageOwner extends StatefulWidget {
+  double width;
+  MessageClass message;
+  PrintMessageOwner({this.width,this.message});
+  @override
+  _PrintMessageOwnerState createState() => _PrintMessageOwnerState();
+}
+
+class _PrintMessageOwnerState extends State<PrintMessageOwner> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        ChatMessage(width: widget.width,message: widget.message,byUser: false,),
+        Align(
+          child: Text(widget.message.messageOwner,
+            style: TextStyle(
+                color: Theme
+                    .of(context)
+                    .primaryColor
+            ),),
+          alignment: Alignment.bottomLeft,
+        ),
+        SizedBox(height: 10.0,)
+      ],
+    );
+  }
+}
+
+class PrintDateDemarcationWithMessage extends StatefulWidget {
+  Widget MessageWidget;
+  String date;
+  PrintDateDemarcationWithMessage({this.date,this.MessageWidget});
+  @override
+  _PrintDateDemarcationWithMessageState createState() => _PrintDateDemarcationWithMessageState();
+}
+
+class _PrintDateDemarcationWithMessageState extends State<PrintDateDemarcationWithMessage> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Align(
+          alignment: Alignment.center,
+          child: Text(
+            widget.date,
+            style: TextStyle(
+                color: Colors.grey,
+                fontWeight: FontWeight.bold,
+                fontSize: 13.0
+            ),
+          ),
+        ),
+        SizedBox(height: 10.0,),
+        widget.MessageWidget,
+      ],
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+//Functions
 String toDateString(Timestamp t){
   var date = DateTime.fromMicrosecondsSinceEpoch(t.microsecondsSinceEpoch);
   String time = date.toString().split(' ')[1];
@@ -316,4 +430,10 @@ String toDateString(Timestamp t){
   result = result + ':' + val[1];
   return result;
 
+}
+
+String returnDate(Timestamp t){
+  var date = DateTime.fromMicrosecondsSinceEpoch(t.microsecondsSinceEpoch);
+  String result = date.toString().split(' ')[0];
+  return result;
 }

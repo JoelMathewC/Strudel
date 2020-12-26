@@ -1,3 +1,5 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
@@ -17,7 +19,7 @@ class _ChatScreenState extends State<ChatScreen> {
   bool loading = true;
   String name = "";
   List<String> data = ['Hi','Heyya','How do ya do','Imma doing good','Jaco young man how is life fe hasa and is it but beyond the measure of a common man'];
-
+  String prevIndividual = "";
   @override
   void initState() {
     // TODO: implement initState
@@ -51,7 +53,7 @@ class _ChatScreenState extends State<ChatScreen> {
     return loading ? Loading(): StreamBuilder(
       stream: FirebaseFirestore.instance.collection('Chats').doc(thisChat.uid).collection('Messages').orderBy('TimeStamp',descending: true).snapshots(),
       builder:(context,snapshot){
-
+        prevIndividual = "";
         if(snapshot.data == null)
           return Loading();
         else {
@@ -82,9 +84,11 @@ class _ChatScreenState extends State<ChatScreen> {
                           reverse: true,
                             itemCount: snapshot.data.documents.length,
                             itemBuilder: (context, index) {
+
                               DocumentSnapshot doc_snap = snapshot.data.documents[index];
                               MessageClass message = MessageClass(message: doc_snap['Message'],time: doc_snap['TimeStamp'],messageOwner: doc_snap['Owner']);
                               if (message.messageOwner == name) {
+                                prevIndividual = name;
                                 return Column(
                                   children: [
                                     Align(
@@ -115,42 +119,75 @@ class _ChatScreenState extends State<ChatScreen> {
                                   ],
                                 );
                               }
-                              else
-                                return Column(
-                                  children: [
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context).primaryColorDark,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15.0)),
+                              else{
+                                if(prevIndividual != message.messageOwner){
+                                  print(prevIndividual + ':' + message.messageOwner + ' - ' + message.message);
+                                  prevIndividual = message.messageOwner;
+                                  return Column(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Theme.of(context).primaryColorDark,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15.0)),
 
-                                        ),
-                                        alignment: Alignment.center,
+                                          ),
+                                          alignment: Alignment.center,
 
-                                        width: (width / 2) - 10,
-                                        child: Padding(
-                                          padding: EdgeInsets.all(10.0),
-                                          child: Text(
-                                            message.message, style: TextStyle(
-                                              color: Theme.of(context).primaryColor,
-                                              fontSize: 17.0
-                                          ),),
+                                          width: (width / 2) - 10,
+                                          child: Padding(
+                                            padding: EdgeInsets.all(10.0),
+                                            child: Text(
+                                              message.message, style: TextStyle(
+                                                color: Theme.of(context).primaryColor,
+                                                fontSize: 17.0
+                                            ),),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(height: 5,),
-                                    Align(
-                                      child: Text(message.messageOwner,
-                                      style: TextStyle(
-                                        color: Theme.of(context).primaryColor
-                                      ),),
-                                      alignment: Alignment.bottomLeft,
-                                    ),
-                                    SizedBox(height: 10.0,)
-                                  ],
-                                );
+                                      SizedBox(height: 5,),
+                                      Align(
+                                        child: Text(message.messageOwner,
+                                          style: TextStyle(
+                                              color: Theme.of(context).primaryColor
+                                          ),),
+                                        alignment: Alignment.bottomLeft,
+                                      ),
+                                      SizedBox(height: 10.0,)
+                                    ],
+                                  );
+                                }
+                                else
+                                  return Column(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Theme.of(context).primaryColorDark,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15.0)),
+
+                                          ),
+                                          alignment: Alignment.center,
+
+                                          width: (width / 2) - 10,
+                                          child: Padding(
+                                            padding: EdgeInsets.all(10.0),
+                                            child: Text(
+                                              message.message, style: TextStyle(
+                                                color: Theme.of(context).primaryColor,
+                                                fontSize: 17.0
+                                            ),),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 10.0,)
+                                    ],
+                                  );
+                              }
                             }),
                       )
                   ),

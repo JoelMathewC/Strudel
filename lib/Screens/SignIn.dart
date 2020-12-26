@@ -92,7 +92,7 @@ class _SignInState extends State<SignIn> {
 
 
 
-                      SizedBox(height: height - 396 - 230), //350 - 580 = 230
+                      SizedBox(height: height - 396 - 260), //350 - 580 = 230  + 30 for errortext
 
                       TextFormField(
                         style: TextStyle(
@@ -164,8 +164,7 @@ class _SignInState extends State<SignIn> {
                               loading = true;
                             });
                             if (_formKey.currentState.validate()) {
-                              dynamic result = await _auth
-                                  .LoginWithEmailAndPassword(email, password);
+                              dynamic result = await _auth.LoginWithEmailAndPassword(email, password);
                               if (result == null) {
                                 setState(() {
                                   loading = false;
@@ -173,6 +172,13 @@ class _SignInState extends State<SignIn> {
                                   'Please enter a valid Email Id and corresponding Password';
                                 });
                               }
+                            }
+                            else{
+                              setState(() {
+                                loading = false;
+                                error =
+                                'Please enter a valid Email Id and corresponding Password';
+                              });
                             }
                           },
                           child: Text('Sign In',
@@ -183,12 +189,13 @@ class _SignInState extends State<SignIn> {
 
                       ),
                       SizedBox(height: 20.0),
-                      Text(error,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontStyle: FontStyle.italic
-                          )
-                      )
+                       Text(error,
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                                fontStyle: FontStyle.italic
+                            )
+                        ),
+
                     ]
                 ),
               )

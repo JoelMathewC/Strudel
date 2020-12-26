@@ -166,7 +166,7 @@ class _SignUpState extends State<SignUp> {
                         ),
                         validator: (val) =>
                         val.length < 6
-                            ? 'Password not Valid'
+                            ? 'Password must contain minimum 6 characters'
                             : null,
                         obscureText: true,
                         onChanged: (val) {
@@ -217,8 +217,7 @@ class _SignUpState extends State<SignUp> {
                             loading = true;
                           });
                           if (_formKey.currentState.validate()) {
-                            dynamic result = await _auth
-                                .registerWithEmailAndPassword(name,email, password);
+                            dynamic result = await _auth.registerWithEmailAndPassword(name,email, password);
                             if (result == null) {
                               setState(() {
                                 loading = false;
@@ -226,6 +225,13 @@ class _SignUpState extends State<SignUp> {
                                 'Please enter a valid Email Id and corresponding Password';
                               });
                             }
+                          }
+                          else{
+                            setState(() {
+                              loading = false;
+                              error =
+                              'Please enter a valid Email Id and corresponding Password';
+                            });
                           }
                         },
                         child: Text('Sign Up',

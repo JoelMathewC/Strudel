@@ -103,13 +103,28 @@ class _ChatScreenState extends State<ChatScreen> {
                                         alignment: Alignment.center,
 
                                         width: (width / 2) - 10,
-                                        child: Padding(
-                                          padding: EdgeInsets.all(10.0),
-                                          child: Text(
-                                            message.message, style: TextStyle(
-                                            color: Theme.of(context).primaryColor,
-                                            fontSize: 17.0,
-                                          ),),
+                                        child: Column(
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: EdgeInsets.fromLTRB(2,7,2,2),
+                                              child: Text(
+                                                message.message, style: TextStyle(
+                                                color: Theme.of(context).primaryColor,
+                                                fontSize: 17.0,
+                                              ),),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.fromLTRB(3,3,5,3),
+                                              child: Align(
+                                                alignment: Alignment.bottomRight,
+                                                child: Text(
+                                                  toDateString(message.time), style: TextStyle(
+                                                  color: Theme.of(context).primaryColor,
+                                                  fontSize: 14.0,
+                                                ),),
+                                              ),
+                                            )
+                                          ],
                                         ),
 
                                       ),
@@ -121,7 +136,6 @@ class _ChatScreenState extends State<ChatScreen> {
                               }
                               else{
                                 if(prevIndividual != message.messageOwner){
-                                  print(prevIndividual + ':' + message.messageOwner + ' - ' + message.message);
                                   prevIndividual = message.messageOwner;
                                   return Column(
                                     children: [
@@ -137,13 +151,28 @@ class _ChatScreenState extends State<ChatScreen> {
                                           alignment: Alignment.center,
 
                                           width: (width / 2) - 10,
-                                          child: Padding(
-                                            padding: EdgeInsets.all(10.0),
-                                            child: Text(
-                                              message.message, style: TextStyle(
-                                                color: Theme.of(context).primaryColor,
-                                                fontSize: 17.0
-                                            ),),
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.fromLTRB(2,7,2,2),
+                                                child: Text(
+                                                  message.message, style: TextStyle(
+                                                    color: Theme.of(context).primaryColor,
+                                                    fontSize: 17.0
+                                                ),),
+                                              ),
+                                              Padding(
+                                                padding: const  EdgeInsets.fromLTRB(3,3,5,3),
+                                                child: Align(
+                                                  alignment: Alignment.bottomRight,
+                                                  child: Text(
+                                                    toDateString(message.time), style: TextStyle(
+                                                    color: Theme.of(context).primaryColor,
+                                                    fontSize: 14.0,
+                                                  ),),
+                                                ),
+                                              )
+                                            ],
                                           ),
                                         ),
                                       ),
@@ -174,13 +203,28 @@ class _ChatScreenState extends State<ChatScreen> {
                                           alignment: Alignment.center,
 
                                           width: (width / 2) - 10,
-                                          child: Padding(
-                                            padding: EdgeInsets.all(10.0),
-                                            child: Text(
-                                              message.message, style: TextStyle(
-                                                color: Theme.of(context).primaryColor,
-                                                fontSize: 17.0
-                                            ),),
+                                          child: Column(
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: EdgeInsets.fromLTRB(2,7,2,2),
+                                                child: Text(
+                                                  message.message, style: TextStyle(
+                                                    color: Theme.of(context).primaryColor,
+                                                    fontSize: 17.0
+                                                ),),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.fromLTRB(3,3,5,3),
+                                                child: Align(
+                                                  alignment: Alignment.bottomRight,
+                                                  child: Text(
+                                                    toDateString(message.time), style: TextStyle(
+                                                    color: Theme.of(context).primaryColor,
+                                                    fontSize: 14.0,
+                                                  ),),
+                                                ),
+                                              )
+                                            ],
                                           ),
                                         ),
                                       ),
@@ -261,4 +305,15 @@ class _ChatScreenState extends State<ChatScreen> {
 
 
   }
+}
+
+
+String toDateString(Timestamp t){
+  var date = DateTime.fromMicrosecondsSinceEpoch(t.microsecondsSinceEpoch);
+  String time = date.toString().split(' ')[1];
+  List<String> val = time.split(':');
+  String result = val[0];
+  result = result + ':' + val[1];
+  return result;
+
 }

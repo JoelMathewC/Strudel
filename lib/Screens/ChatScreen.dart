@@ -95,6 +95,10 @@ class _ChatScreenState extends State<ChatScreen> {
                               MessageClass message = MessageClass(message: doc_snap['Message'],time: doc_snap['TimeStamp'],messageOwner: doc_snap['Owner']);
                               currentDate = returnDate(message.time);
 
+                              if(index == snapshot.data.documents.length - 1){
+                                return PrintDateDemarcationForLastMessage(date: currentDate,MessageWidget: ChatMessage(width: width,message: message,byUser: message.messageOwner == name,),);
+                              }
+
                               if (message.messageOwner == name) {  //---------------------Message is Users
                                  prevIndividual = name;
                                 if(prevDate == "" || prevDate == currentDate){
@@ -394,6 +398,38 @@ class _PrintDateDemarcationWithMessageState extends State<PrintDateDemarcationWi
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
+        widget.MessageWidget,
+        Align(
+          alignment: Alignment.center,
+          child: Text(
+            widget.date,
+            style: TextStyle(
+                color: Colors.grey,
+                fontWeight: FontWeight.bold,
+                fontSize: 13.0
+            ),
+          ),
+        ),
+        SizedBox(height: 10.0,),
+      ],
+    );
+  }
+}
+
+
+class PrintDateDemarcationForLastMessage extends StatefulWidget {
+  Widget MessageWidget;
+  String date;
+  PrintDateDemarcationForLastMessage({this.date,this.MessageWidget});
+  @override
+  _PrintDateDemarcationForLastMessageState createState() => _PrintDateDemarcationForLastMessageState();
+}
+
+class _PrintDateDemarcationForLastMessageState extends State<PrintDateDemarcationForLastMessage> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
         Align(
           alignment: Alignment.center,
           child: Text(
@@ -407,11 +443,11 @@ class _PrintDateDemarcationWithMessageState extends State<PrintDateDemarcationWi
         ),
         SizedBox(height: 10.0,),
         widget.MessageWidget,
+
       ],
     );
   }
 }
-
 
 
 

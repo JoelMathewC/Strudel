@@ -78,7 +78,8 @@ class _HomeState extends State<Home> {
               ],
             ),
             floatingActionButton: FloatingActionButton(
-              child: Icon(Icons.add),
+              child: Icon(Icons.add,
+              color: Theme.of(context).primaryColor,),
               backgroundColor: Theme.of(context).accentColor,
               onPressed: () {
                 Navigator.pushNamed(context, AddChatScreen.id);

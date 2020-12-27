@@ -12,5 +12,6 @@ class MessageClass{
   String message;
   Timestamp time;
   String messageOwner;
-  MessageClass({this.message,this.time,this.messageOwner});
+  String date;
+  MessageClass({this.message,this.time,this.messageOwner,this.date});
 }

@@ -53,7 +53,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     double height = MediaQuery. of(context). size. height;
     double width = MediaQuery. of(context). size. width;
-
+    List<MessageClass> messages = [];
 
 
     return loading ? Loading(): StreamBuilder(
@@ -64,6 +64,32 @@ class _ChatScreenState extends State<ChatScreen> {
         if(snapshot.data == null)
           return Loading();
         else {
+          int i = 0;
+          for (DocumentSnapshot doc in snapshot.data.documents){
+            MessageClass message = MessageClass(message: doc['Message'],time: doc['TimeStamp'],messageOwner: doc['Owner'],date: null);
+            currentDate = returnDate(message.time);
+
+
+            if(prevIndividual != message.messageOwner && prevIndividual != name){
+              messages.add(MessageClass(message: null,time: null,messageOwner: prevIndividual,date: null));
+            }
+
+            if((prevDate != "" && prevDate != currentDate)){
+              messages.add(MessageClass(message: null,time: null,messageOwner: null,date: prevDate));
+            }
+
+            prevIndividual = message.messageOwner;
+            prevDate = currentDate;
+            messages.add(message);
+            i = i + 1;
+
+            if(i == snapshot.data.documents.length){
+              if(prevIndividual != name){
+                messages.add(MessageClass(message: null,time: null,messageOwner: prevIndividual,date: null));
+              }
+              messages.add(MessageClass(message: null,time: null,messageOwner: null,date: prevDate));
+            }
+          }
           return Scaffold(
             backgroundColor: Theme.of(context).canvasColor,
             appBar: AppBar(
@@ -89,48 +115,20 @@ class _ChatScreenState extends State<ChatScreen> {
                         child: ListView.builder(
 
                           reverse: true,
-                            itemCount: snapshot.data.documents.length,
+                            itemCount: messages.length,
                             itemBuilder: (context, index) {
-                              DocumentSnapshot doc_snap = snapshot.data.documents[index];
-                              MessageClass message = MessageClass(message: doc_snap['Message'],time: doc_snap['TimeStamp'],messageOwner: doc_snap['Owner']);
-                              currentDate = returnDate(message.time);
+                              MessageClass message = messages[index];
 
-                              if(index == snapshot.data.documents.length - 1){
-                                return PrintDateDemarcationForLastMessage(date: currentDate,MessageWidget: ChatMessage(width: width,message: message,byUser: message.messageOwner == name,),);
+                              if (message.message != null){
+                                return ChatMessage(width: width,message: message,byUser: message.messageOwner == name,);
                               }
 
-                              if (message.messageOwner == name) {  //---------------------Message is Users
-                                 prevIndividual = name;
-                                if(prevDate == "" || prevDate == currentDate){
-                                  prevDate = currentDate;
-                                  return ChatMessage(width: width,message: message,byUser: true,);
-                                }
-                                else{
-                                   dateToPrint = prevDate;
-                                  prevDate = currentDate;
-                                  return PrintDateDemarcationWithMessage(date: dateToPrint,MessageWidget: ChatMessage(width: width,message: message,byUser: true,),);
-                                }
+                              else if(message.messageOwner != null){
+                                return PrintOwnerNameWidget(width: width,message: message,);
                               }
-                              else { // ----------------------Message is not Users
-
-                                if (prevIndividual != message.messageOwner) {
-                                  prevIndividual = message.messageOwner;
-                                  MessageWidget = PrintMessageOwner(width: width,message: message,);
-                                }
-                                else {
-                                  MessageWidget = OtherMessage(width: width,message: message,);
-                                }
-
-                                if (prevDate == "" || prevDate == currentDate) {
-                                  prevDate = currentDate;
-                                  return MessageWidget;
-                                }
-                                else {
-                                  dateToPrint = prevDate;
-                                  prevDate = currentDate;
-                                   return PrintDateDemarcationWithMessage(date: dateToPrint,MessageWidget: MessageWidget,);
-                                  }
-                                }
+                               else{
+                                 return PrintDateWidget(date: message.date,);
+                              }
 
 
                             }),
@@ -354,22 +352,22 @@ class _ChatMessageState extends State<ChatMessage> {
     return widget.byUser? UserMessage(width: widget.width,message: widget.message,):OtherMessage(width: widget.width,message: widget.message,);
   }
 }
-//END OF CHAT MESSAGE CLASS
+//END OF CHAT MESSAGE WIDGET
 
-class PrintMessageOwner extends StatefulWidget {
+
+class PrintOwnerNameWidget extends StatefulWidget {
   double width;
   MessageClass message;
-  PrintMessageOwner({this.width,this.message});
+  PrintOwnerNameWidget({this.width,this.message});
   @override
-  _PrintMessageOwnerState createState() => _PrintMessageOwnerState();
+  _PrintOwnerNameWidgetState createState() => _PrintOwnerNameWidgetState();
 }
 
-class _PrintMessageOwnerState extends State<PrintMessageOwner> {
+class _PrintOwnerNameWidgetState extends State<PrintOwnerNameWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        ChatMessage(width: widget.width,message: widget.message,byUser: false,),
         Align(
           child: Text(widget.message.messageOwner,
             style: TextStyle(
@@ -379,53 +377,22 @@ class _PrintMessageOwnerState extends State<PrintMessageOwner> {
             ),),
           alignment: Alignment.bottomLeft,
         ),
-        SizedBox(height: 10.0,)
-      ],
-    );
-  }
-}
-
-class PrintDateDemarcationWithMessage extends StatefulWidget {
-  Widget MessageWidget;
-  String date;
-  PrintDateDemarcationWithMessage({this.date,this.MessageWidget});
-  @override
-  _PrintDateDemarcationWithMessageState createState() => _PrintDateDemarcationWithMessageState();
-}
-
-class _PrintDateDemarcationWithMessageState extends State<PrintDateDemarcationWithMessage> {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        widget.MessageWidget,
-        Align(
-          alignment: Alignment.center,
-          child: Text(
-            widget.date,
-            style: TextStyle(
-                color: Colors.grey,
-                fontWeight: FontWeight.bold,
-                fontSize: 13.0
-            ),
-          ),
-        ),
         SizedBox(height: 10.0,),
+
       ],
     );
   }
 }
 
 
-class PrintDateDemarcationForLastMessage extends StatefulWidget {
-  Widget MessageWidget;
+class PrintDateWidget extends StatefulWidget {
   String date;
-  PrintDateDemarcationForLastMessage({this.date,this.MessageWidget});
+  PrintDateWidget({this.date});
   @override
-  _PrintDateDemarcationForLastMessageState createState() => _PrintDateDemarcationForLastMessageState();
+  _PrintDateWidgetState createState() => _PrintDateWidgetState();
 }
 
-class _PrintDateDemarcationForLastMessageState extends State<PrintDateDemarcationForLastMessage> {
+class _PrintDateWidgetState extends State<PrintDateWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -442,12 +409,12 @@ class _PrintDateDemarcationForLastMessageState extends State<PrintDateDemarcatio
           ),
         ),
         SizedBox(height: 10.0,),
-        widget.MessageWidget,
-
       ],
     );
   }
 }
+
+
 
 
 

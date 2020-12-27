@@ -24,7 +24,6 @@ class _ChatScreenState extends State<ChatScreen> {
   String prevIndividual = "";
   String prevDate = "";
   String currentDate = "";
-  String dateToPrint = "";
   Widget MessageWidget;
   @override
   void initState() {
@@ -64,6 +63,8 @@ class _ChatScreenState extends State<ChatScreen> {
         if(snapshot.data == null)
           return Loading();
         else {
+          messages = [];
+
           int i = 0;
           for (DocumentSnapshot doc in snapshot.data.documents){
             MessageClass message = MessageClass(message: doc['Message'],time: doc['TimeStamp'],messageOwner: doc['Owner'],date: null);

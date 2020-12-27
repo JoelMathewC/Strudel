@@ -37,7 +37,8 @@ class _HomeState extends State<Home> {
         else {
           listOfChats = snapshot.data['Chats'];
 
-          ChatDatabase().returnChatName(listOfChats).then((value){
+
+          ChatDatabase().returnChatName(listOfChats).then((value){   // <------Major Bottleneck ISSUE ###################
             setState(() {
               nameOfChats = value;
             });

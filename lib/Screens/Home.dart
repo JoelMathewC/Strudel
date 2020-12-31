@@ -145,38 +145,7 @@ class _HomeState extends State<Home> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           DisplayNameAndMessage(lastMessage: chats[index].lastMessage,lastMessageOwner: chats[index].lastMessageOwner,chatName: chats[index].chatName,lastMessageExists: chats[index].lastMessage != null,),
-                          Column(
-                            children: <Widget>[
-                              Text(
-                          convertTimeStamptoUsableFormat(chats[index].time),
-                                style: TextStyle(
-                                    fontSize: 15.0,
-                                    color: Theme.of(context).primaryColor,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(height: 8.0,),
-                              Container(
-                                height: 30.0,
-                                width: 30.0,
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context).primaryColor,
-                                    shape: BoxShape.circle
-                                ),
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    chats[index].numOfMessages.toString(),
-                                    //'1',
-                                    style: TextStyle(
-                                        fontSize: 15.0,
-                                        color: Theme.of(context).accentColor,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              )
-                            ],
-                          )
-
+                          DisplayNotificationAndTime(time: chats[index].time,numOfMessages: chats[index].numOfMessages,notificationsExist: chats[index].numOfMessages > 0,)
                         ],
                       ),
                     ),
@@ -268,7 +237,63 @@ class _DisplayNameAndMessageState extends State<DisplayNameAndMessage> {
                   .primaryColor,
               fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 5.0,),
+      ],
+    );
+  }
+}
+
+class DisplayNotificationAndTime extends StatefulWidget {
+  Timestamp time;
+  int numOfMessages;
+  bool notificationsExist;
+  DisplayNotificationAndTime({this.notificationsExist,this.time,this.numOfMessages});
+  @override
+  _DisplayNotificationAndTimeState createState() => _DisplayNotificationAndTimeState();
+}
+
+class _DisplayNotificationAndTimeState extends State<DisplayNotificationAndTime> {
+  @override
+  Widget build(BuildContext context) {
+    return widget.notificationsExist?Column(
+      children: <Widget>[
+        Text(
+          convertTimeStamptoUsableFormat(widget.time),
+          style: TextStyle(
+              fontSize: 15.0,
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 8.0,),
+        Container(
+          height: 30.0,
+          width: 30.0,
+          decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              shape: BoxShape.circle
+          ),
+          child: Align(
+            alignment: Alignment.center,
+            child: Text(
+              widget.numOfMessages.toString(),
+              //'1',
+              style: TextStyle(
+                  fontSize: 15.0,
+                  color: Theme.of(context).accentColor,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+        )
+      ],
+    ):Column(
+      children: <Widget>[
+        Text(
+          convertTimeStamptoUsableFormat(widget.time),
+          style: TextStyle(
+              fontSize: 15.0,
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 38.0,),
       ],
     );
   }

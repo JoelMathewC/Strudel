@@ -6,18 +6,16 @@ class ChatDatabase{
 
     final CollectionReference chats = FirebaseFirestore.instance.collection('Chats');
 
-    Future<List<String>> returnChatName(List<dynamic> uids) async {  //Works
-      List<String> names = [];
-      String name;
+    Future<List<DocumentSnapshot>> returnDocumentSnapshotsOfChats(List<dynamic> uids) async {  //Works
+      List<DocumentSnapshot> chats_docSnap = [];
 
       for (String uid in uids){
         await chats.doc(uid).get().then((DocumentSnapshot documentSnapshot) {
-          name = documentSnapshot.data()['Name'];
-          names.add(name);
+          chats_docSnap.add(documentSnapshot);
         });
       }
 
-      return names;
+      return chats_docSnap;
     }
 
     Future<void> sendMessage(MessageClass message,String uid) async{

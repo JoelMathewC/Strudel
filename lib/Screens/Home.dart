@@ -22,7 +22,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
   List<dynamic> listOfChats = [];
-  List<dynamic> nameOfChats = [];
+  List<DocumentSnapshot> Chats = [];
 
 
 
@@ -38,9 +38,9 @@ class _HomeState extends State<Home> {
           listOfChats = snapshot.data['Chats'];
 
 
-          ChatDatabase().returnChatName(listOfChats).then((value){   // <------Major Bottleneck ISSUE ###################
+          ChatDatabase().returnDocumentSnapshotsOfChats(listOfChats).then((value){   // <------Major Bottleneck ISSUE ###################
             setState(() {
-              nameOfChats = value;
+              Chats = value;
             });
 
           });
@@ -87,12 +87,12 @@ class _HomeState extends State<Home> {
               },
             ),
             body: ListView.builder(
-                itemCount: nameOfChats.length,
+                itemCount: Chats.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
                       ChatClass selectedClass = ChatClass(
-                          name: nameOfChats[index], uid: listOfChats[index]);
+                          name: Chats[index].data()['Name'], uid: listOfChats[index]);
                       Navigator.pushNamed(
                           context, ChatScreen.id, arguments: selectedClass);
                     },
@@ -118,7 +118,7 @@ class _HomeState extends State<Home> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                nameOfChats[index],
+                                Chats[index].data()['Name'],
                                 style: TextStyle(
                                     fontSize: 20.0,
                                     color: Theme.of(context).primaryColor,

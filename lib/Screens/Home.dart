@@ -22,28 +22,62 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
   List<dynamic> listOfChats = [];
-  List<DocumentSnapshot> Chats = [];
-
+  List<DisplayChatClass> chats = [];
+  bool loading = true;
+  Map<dynamic,int> idToIndex = {};
+  @override
+  void initState() {
+    // TODO: implement initState
+    UserDatabase().listAllChats(_auth.currentUser.email).then((value){
+      setState(() {
+        listOfChats = value;
+        int i = 0;
+        for(String chat_id in listOfChats){
+          DisplayChatClass displayChat = DisplayChatClass(chatID: chat_id,chatName: null,numOfMessages: 0,time: null,lastMessage: null);
+          chats.add(displayChat);
+          idToIndex.addAll({chat_id:i});
+          ++i;
+        }
+        print(listOfChats);
+        print(idToIndex);
+        loading = false;
+      });
+    });
+    super.initState();
+  }
 
 
   @override
   Widget build(BuildContext context) {
-    return  StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('Users').doc(auth.FirebaseAuth.instance.currentUser.email).snapshots(),
+    return  loading? Loading():StreamBuilder(
+      stream: FirebaseFirestore.instance.collection('ChatStream').orderBy('TimeStamp',descending: true).snapshots(),
       builder: (context,snapshot){
         if(snapshot.data == null)
           return Loading();
 
         else {
-          listOfChats = snapshot.data['Chats'];
+          for(DocumentSnapshot doc in snapshot.data.documents){
+            print('Hi');
+            if(listOfChats.contains(doc['Chat_id'])){
+              if(doc['First'] == true){
+                chats[idToIndex[doc['Chat_id']]].chatName = doc['ChatName'];
+                continue;
+              }
+              chats[idToIndex[doc['Chat_id']]].numOfMessages += 1;
+              if(chats[idToIndex[doc['Chat_id']]].lastMessage == null) {
+                chats[idToIndex[doc['Chat_id']]].lastMessage = doc['Message'];
+                chats[idToIndex[doc['Chat_id']]].time = doc['TimeStamp'];
+                chats[idToIndex[doc['Chat_id']]].lastMessageOwner = doc['Owner'];
+              }
+            }
+          }
+          // print(chats[0].chatID + ':' + chats[0].chatName );
+          // //    + ':' + chats[0].lastMessageOwner + ':' + chats[0].lastMessage);
 
 
-          ChatDatabase().returnDocumentSnapshotsOfChats(listOfChats).then((value){   // <------Major Bottleneck ISSUE ###################
-            setState(() {
-              Chats = value;
-            });
 
-          });
+
+
           return Scaffold(
             backgroundColor: Theme.of(context).canvasColor,
             appBar: AppBar(
@@ -87,12 +121,12 @@ class _HomeState extends State<Home> {
               },
             ),
             body: ListView.builder(
-                itemCount: Chats.length,
+                itemCount: chats.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
                       ChatClass selectedClass = ChatClass(
-                          name: Chats[index].data()['Name'], uid: listOfChats[index]);
+                          name: chats[index].chatName, uid: chats[index].chatID);
                       Navigator.pushNamed(
                           context, ChatScreen.id, arguments: selectedClass);
                     },
@@ -118,15 +152,53 @@ class _HomeState extends State<Home> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                Chats[index].data()['Name'],
+                                chats[index].chatName,
                                 style: TextStyle(
                                     fontSize: 20.0,
                                     color: Theme.of(context).primaryColor,
                                     fontWeight: FontWeight.bold),
                               ),
-
+                              SizedBox(height: 5.0,),
+                              Text(
+                                '  ' + chats[index].lastMessageOwner + ':' + chats[index].lastMessage,
+                                style: TextStyle(
+                                    fontSize: 15.0,
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ],
                           ),
+                          Column(
+                            children: <Widget>[
+                              Text(
+                                convertTimeStamptoUsableFormat(chats[index].time),
+                                style: TextStyle(
+                                    fontSize: 15.0,
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 8.0,),
+                              Container(
+                                height: 30.0,
+                                width: 30.0,
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    shape: BoxShape.circle
+                                ),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    chats[index].numOfMessages.toString(),
+                                    //'1',
+                                    style: TextStyle(
+                                        fontSize: 15.0,
+                                        color: Theme.of(context).accentColor,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              )
+                            ],
+                          )
 
                         ],
                       ),
@@ -138,4 +210,33 @@ class _HomeState extends State<Home> {
         }
       });
   }
+}
+
+String convertTimeStamptoUsableFormat(Timestamp t){
+  DateTime now = DateTime.now();
+  DateTime date = t.toDate();
+  if(DateTime(now.year,now.month,now.day).difference(DateTime(date.year,date.month,date.day)).inDays == 0){
+    return toTimeString(t);
+  }
+  else
+    return returnDate(t);
+}
+
+String toTimeString(Timestamp t){ //returnTime
+  var date = DateTime.fromMicrosecondsSinceEpoch(t.microsecondsSinceEpoch);
+  String time = date.toString().split(' ')[1];
+  List<String> val = time.split(':');
+  String result = val[0];
+  result = result + ':' + val[1];
+  if(result == '00:00'){
+    result = returnDate(t);
+  }
+  return result;
+
+}
+
+String returnDate(Timestamp t){ //returnDate
+  var date = DateTime.fromMicrosecondsSinceEpoch(t.microsecondsSinceEpoch);
+  String result = date.toString().split(' ')[0];
+  return result;
 }

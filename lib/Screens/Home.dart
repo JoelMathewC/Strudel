@@ -33,7 +33,7 @@ class _HomeState extends State<Home> {
         listOfChats = value;
         int i = 0;
         for(String chat_id in listOfChats){
-          DisplayChatClass displayChat = DisplayChatClass(chatID: chat_id,chatName: null,numOfMessages: 0,time: null,lastMessage: null);
+          DisplayChatClass displayChat = DisplayChatClass(chatID: chat_id,chatName: null,numOfMessages: 0,time: null,lastMessage: null,lastMessageOwner: null);
           chats.add(displayChat);
           idToIndex.addAll({chat_id:i});
           ++i;
@@ -57,10 +57,10 @@ class _HomeState extends State<Home> {
 
         else {
           for(DocumentSnapshot doc in snapshot.data.documents){
-            print('Hi');
             if(listOfChats.contains(doc['Chat_id'])){
               if(doc['First'] == true){
                 chats[idToIndex[doc['Chat_id']]].chatName = doc['ChatName'];
+                chats[idToIndex[doc['Chat_id']]].time = doc['TimeStamp'];
                 continue;
               }
               chats[idToIndex[doc['Chat_id']]].numOfMessages += 1;
@@ -71,10 +71,6 @@ class _HomeState extends State<Home> {
               }
             }
           }
-          // print(chats[0].chatID + ':' + chats[0].chatName );
-          // //    + ':' + chats[0].lastMessageOwner + ':' + chats[0].lastMessage);
-
-
 
 
 
@@ -148,30 +144,11 @@ class _HomeState extends State<Home> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                chats[index].chatName,
-                                style: TextStyle(
-                                    fontSize: 20.0,
-                                    color: Theme.of(context).primaryColor,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(height: 5.0,),
-                              Text(
-                                '  ' + chats[index].lastMessageOwner + ':' + chats[index].lastMessage,
-                                style: TextStyle(
-                                    fontSize: 15.0,
-                                    color: Theme.of(context).primaryColor,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
+                          DisplayNameAndMessage(lastMessage: chats[index].lastMessage,lastMessageOwner: chats[index].lastMessageOwner,chatName: chats[index].chatName,lastMessageExists: chats[index].lastMessage != null,),
                           Column(
                             children: <Widget>[
                               Text(
-                                convertTimeStamptoUsableFormat(chats[index].time),
+                          convertTimeStamptoUsableFormat(chats[index].time),
                                 style: TextStyle(
                                     fontSize: 15.0,
                                     color: Theme.of(context).primaryColor,
@@ -239,4 +216,60 @@ String returnDate(Timestamp t){ //returnDate
   var date = DateTime.fromMicrosecondsSinceEpoch(t.microsecondsSinceEpoch);
   String result = date.toString().split(' ')[0];
   return result;
+}
+
+class DisplayNameAndMessage extends StatefulWidget {
+  String chatName;
+  String lastMessage;
+  String lastMessageOwner;
+  bool lastMessageExists;
+  DisplayNameAndMessage({this.lastMessage,this.lastMessageOwner,this.chatName,this.lastMessageExists});
+  @override
+  _DisplayNameAndMessageState createState() => _DisplayNameAndMessageState();
+}
+
+class _DisplayNameAndMessageState extends State<DisplayNameAndMessage> {
+
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.lastMessageExists ? Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          widget.chatName,
+          style: TextStyle(
+              fontSize: 20.0,
+              color: Theme
+                  .of(context)
+                  .primaryColor,
+              fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 5.0,),
+        Text(
+          '  ' +widget.lastMessageOwner + ':' +widget.lastMessage,
+          style: TextStyle(
+              fontSize: 15.0,
+              color: Theme
+                  .of(context)
+                  .primaryColor,
+              fontWeight: FontWeight.bold),
+        ),
+      ],
+    ): Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          widget.chatName,
+          style: TextStyle(
+              fontSize: 20.0,
+              color: Theme
+                  .of(context)
+                  .primaryColor,
+              fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 5.0,),
+      ],
+    );
+  }
 }

@@ -4,33 +4,37 @@ import 'package:strudel/Database/UserDatabase.dart';
 
 class ChatDatabase{
 
-    final CollectionReference chats = FirebaseFirestore.instance.collection('Chats');
+    final CollectionReference chats = FirebaseFirestore.instance.collection('ChatStream');
 
-    Future<List<DocumentSnapshot>> returnDocumentSnapshotsOfChats(List<dynamic> uids) async {  //Works
-      List<DocumentSnapshot> chats_docSnap = [];
-
-      for (String uid in uids){
-        await chats.doc(uid).get().then((DocumentSnapshot documentSnapshot) {
-          chats_docSnap.add(documentSnapshot);
-        });
-      }
-
-      return chats_docSnap;
-    }
+    // Future<List<DocumentSnapshot>> returnDocumentSnapshotsOfChats(List<dynamic> uids) async {  //Works
+    //   List<DocumentSnapshot> chats_docSnap = [];
+    //
+    //   for (String uid in uids){
+    //     await chats.doc(uid).get().then((DocumentSnapshot documentSnapshot) {
+    //       chats_docSnap.add(documentSnapshot);
+    //     });
+    //   }
+    //
+    //   return chats_docSnap;
+    // }
 
     Future<void> sendMessage(MessageClass message,String uid) async{
-      await chats.doc(uid).collection('Messages').add({
+      await chats.add({
         'Message': message.message,
         'Owner': message.messageOwner,
         'TimeStamp': message.time,
+        'First':false,
+        'Chat_id': uid,
       });
     }
 
     Future<void> createNewChat(dynamic groupName, List<dynamic> participants,List<dynamic> participants_id) async {
       dynamic id = chats.doc().id;
       await chats.doc(id).set({
-        'Name': groupName,
-        'Participants': participants,
+        'ChatName': groupName,
+        'Chat_id': id,
+        'First':true,
+        'TimeStamp': Timestamp.fromDate(DateTime.now()),
       });
       await addChatToUsers(participants_id,id);
     }

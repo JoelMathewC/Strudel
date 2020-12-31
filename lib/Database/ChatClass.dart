@@ -23,5 +23,5 @@ class DisplayChatClass{
   String chatID;
   int numOfMessages;
   Timestamp time;
-  DisplayChatClass({this.chatID,this.chatName,this.time,this.lastMessage,this.numOfMessages});
+  DisplayChatClass({this.chatID,this.chatName,this.time,this.lastMessage,this.numOfMessages,this.lastMessageOwner});
 }

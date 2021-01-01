@@ -10,7 +10,8 @@ class UserDatabase{
   Future<void> createUser(String email, String Name) async {
     await users.doc(email).set({
         'Name': Name,
-        'Chats':[]
+        'Chats':[],
+        'NumOfSeenMessages': {},
     });
   }
 
@@ -20,6 +21,22 @@ class UserDatabase{
       chats_uid = documentSnapshot.data()['Chats'];
     });
     return chats_uid;
+  }
+
+  Future<Map<dynamic,dynamic>> returnNumOfSeenMessages(String email) async {
+    Map<dynamic,dynamic> map = {};
+    await users.doc(email).get().then((DocumentSnapshot documentSnapshot){
+      map = documentSnapshot.data()['NumOfSeenMessages'];
+    });
+    return map;
+  }
+
+  Future<List<dynamic>> returnChatDetails(String email) async {
+    List<dynamic> chats_uid;
+    Map<dynamic,dynamic> numOfMessages;
+    chats_uid = await listAllChats(email);
+    numOfMessages = await returnNumOfSeenMessages(email);
+    return [chats_uid, numOfMessages];
   }
 
   Future<dynamic> returnName() async{
@@ -49,14 +66,18 @@ class UserDatabase{
   Future<void> addChatToUser(dynamic id,dynamic chat_id) async{
     List<dynamic> chats = [];
     dynamic name;
+    Map<dynamic,int> numOfSeenMessages = {};
     await users.doc(id).get().then((DocumentSnapshot documentSnapshot){
       chats = documentSnapshot.data()['Chats'];
       name = documentSnapshot.data()['Name'];
+      numOfSeenMessages = documentSnapshot.data()['NumOfSeenMessages'];
     });
     chats.add(chat_id);
+    numOfSeenMessages.addAll({chat_id:0});
     await users.doc(id).set({
       'Chats': chats,
-      'Name' : name
+      'Name' : name,
+      'NumOfSeenMessages':numOfSeenMessages,
     });
   }
 

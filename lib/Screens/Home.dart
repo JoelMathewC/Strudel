@@ -24,14 +24,17 @@ class _HomeState extends State<Home> {
   List<dynamic> listOfChats = [];
   List<DisplayChatClass> chats = [];
   Map<dynamic,int> idToIndex = {};
+  Map<dynamic,dynamic> numOfSeenMessages = {};
   bool loading = true;
 
   @override
   void initState() {
     // TODO: implement initState
-    UserDatabase().listAllChats(_auth.currentUser.email).then((value){
+    UserDatabase().returnChatDetails(_auth.currentUser.email).then((value){
       setState(() {
-        listOfChats = value;
+        listOfChats = value[0];
+        numOfSeenMessages = value[1];
+        print(numOfSeenMessages);
         int i = 0;
         for(String chat_id in listOfChats){
           DisplayChatClass displayChat = DisplayChatClass(chatID: chat_id,chatName: null,numOfMessages: 0,time: null,lastMessage: null,lastMessageOwner: null);
@@ -62,11 +65,12 @@ class _HomeState extends State<Home> {
             displayChat.lastMessageOwner = null;
           }
 
-          for(DocumentSnapshot doc in snapshot.data.documents){
+          for(DocumentSnapshot doc in snapshot.data.documents){ //Updates Messages and New Groups
             if (doc['First'] == true) {
               if(doc['Members'].contains(_auth.currentUser.email) && !(listOfChats.contains(doc['Chat_id']))){
                 listOfChats.add(doc['Chat_id']);
                 idToIndex.addAll({doc['Chat_id']:listOfChats.length - 1});
+                numOfSeenMessages.addAll({doc['Chat_id']:0});
                 DisplayChatClass displayChat = DisplayChatClass(chatID: doc['Chat_id'],chatName: null,numOfMessages: 0,time: null,lastMessage: null,lastMessageOwner: null);
                 chats.add(displayChat);
                 chats[idToIndex[doc['Chat_id']]].chatName = doc['ChatName'];
@@ -90,8 +94,17 @@ class _HomeState extends State<Home> {
             }
           }
 
-
-
+          for(int i=0;i<chats.length;++i){ //Removes any null chats if they exist
+            if(chats[i].chatName == null){
+              chats.removeAt(i);
+              idToIndex.remove(listOfChats[i]);
+              numOfSeenMessages.remove(listOfChats[i]);
+              listOfChats.removeAt(i);
+            }
+          }
+          for(DisplayChatClass displayChat in chats){ //For the unseen messages
+            displayChat.numOfMessages -= numOfSeenMessages[displayChat.chatID];
+          }
           return Scaffold(
             backgroundColor: Theme.of(context).canvasColor,
             appBar: AppBar(
@@ -143,6 +156,10 @@ class _HomeState extends State<Home> {
                           name: chats[index].chatName, uid: chats[index].chatID);
                       Navigator.pushNamed(
                           context, ChatScreen.id, arguments: selectedClass);
+                      setState(() { //to update the notifications count
+                        numOfSeenMessages[chats[index].chatID] += chats[index].numOfMessages;
+                      });
+
                     },
                     child: Container(
 

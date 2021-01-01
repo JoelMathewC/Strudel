@@ -26,6 +26,7 @@ class _HomeState extends State<Home> {
   Map<dynamic,int> idToIndex = {};
   Map<dynamic,dynamic> numOfSeenMessages = {};
   bool loading = true;
+  String prevOpenedChatID = "";
 
   @override
   void initState() {
@@ -103,6 +104,10 @@ class _HomeState extends State<Home> {
             }
           }
           for(DisplayChatClass displayChat in chats){ //For the unseen messages
+            if(displayChat.chatID == prevOpenedChatID){
+              numOfSeenMessages[displayChat.chatID] = displayChat.numOfMessages;
+              prevOpenedChatID = null;
+            }
             displayChat.numOfMessages -= numOfSeenMessages[displayChat.chatID];
           }
           return Scaffold(
@@ -154,11 +159,9 @@ class _HomeState extends State<Home> {
                     onTap: () {
                       ChatClass selectedClass = ChatClass(
                           name: chats[index].chatName, uid: chats[index].chatID);
+                      prevOpenedChatID = chats[index].chatID;
                       Navigator.pushNamed(
                           context, ChatScreen.id, arguments: selectedClass);
-                      setState(() { //to update the notifications count
-                        numOfSeenMessages[chats[index].chatID] += chats[index].numOfMessages;
-                      });
 
                     },
                     child: Container(

@@ -63,17 +63,29 @@ class _HomeState extends State<Home> {
           }
 
           for(DocumentSnapshot doc in snapshot.data.documents){
-            if(listOfChats.contains(doc['Chat_id'])){
-              if(doc['First'] == true){
+            if (doc['First'] == true) {
+              if(doc['Members'].contains(_auth.currentUser.email) && !(listOfChats.contains(doc['Chat_id']))){
+                listOfChats.add(doc['Chat_id']);
+                idToIndex.addAll({doc['Chat_id']:listOfChats.length - 1});
+                DisplayChatClass displayChat = DisplayChatClass(chatID: doc['Chat_id'],chatName: null,numOfMessages: 0,time: null,lastMessage: null,lastMessageOwner: null);
+                chats.add(displayChat);
                 chats[idToIndex[doc['Chat_id']]].chatName = doc['ChatName'];
                 chats[idToIndex[doc['Chat_id']]].time = doc['TimeStamp'];
-                continue;
               }
-              chats[idToIndex[doc['Chat_id']]].numOfMessages += 1;
-              if(chats[idToIndex[doc['Chat_id']]].lastMessage == null) {
-                chats[idToIndex[doc['Chat_id']]].lastMessage = doc['Message'];
-                chats[idToIndex[doc['Chat_id']]].time = doc['TimeStamp'];
-                chats[idToIndex[doc['Chat_id']]].lastMessageOwner = doc['Owner'];
+              else if(listOfChats.contains(doc['Chat_id'])){
+              chats[idToIndex[doc['Chat_id']]].chatName = doc['ChatName'];
+              chats[idToIndex[doc['Chat_id']]].time = doc['TimeStamp'];
+              }
+            }
+            else {
+              if (listOfChats.contains(doc['Chat_id'])) {
+                chats[idToIndex[doc['Chat_id']]].numOfMessages += 1;
+                if (chats[idToIndex[doc['Chat_id']]].lastMessage == null) {
+                  chats[idToIndex[doc['Chat_id']]].lastMessage = doc['Message'];
+                  chats[idToIndex[doc['Chat_id']]].time = doc['TimeStamp'];
+                  chats[idToIndex[doc['Chat_id']]].lastMessageOwner =
+                  doc['Owner'];
+                }
               }
             }
           }

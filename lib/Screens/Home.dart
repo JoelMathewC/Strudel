@@ -206,7 +206,7 @@ class _DisplayNameAndMessageState extends State<DisplayNameAndMessage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          widget.chatName,
+          ' ' + widget.chatName,
           style: TextStyle(
               fontSize: 20.0,
               color: Theme
@@ -229,7 +229,7 @@ class _DisplayNameAndMessageState extends State<DisplayNameAndMessage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          widget.chatName,
+          ' ' + widget.chatName,
           style: TextStyle(
               fontSize: 20.0,
               color: Theme
@@ -274,8 +274,8 @@ class _DisplayNotificationAndTimeState extends State<DisplayNotificationAndTime>
           child: Align(
             alignment: Alignment.center,
             child: Text(
-              widget.numOfMessages.toString(),
-              //'1',
+              widget.numOfMessages > 500? '500+': widget.numOfMessages.toString(),
+
               style: TextStyle(
                   fontSize: 15.0,
                   color: Theme.of(context).accentColor,

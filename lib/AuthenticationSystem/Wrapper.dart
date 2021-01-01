@@ -22,7 +22,6 @@ class _WrapperState extends State<Wrapper> {
       stream: AuthServices().user,
       builder: (context, user){
         if(user.hasData) {
-          print(user);
           return Home();
         }
         else {

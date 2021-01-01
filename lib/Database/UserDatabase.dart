@@ -68,13 +68,11 @@ class UserDatabase{
     dynamic name;
 
     DocumentReference doc_ref = users.doc(id);
-    print(doc_ref);
     if(doc_ref != null) {
       await users.doc(id).get().then((DocumentSnapshot documentSnapshot) {
         name = documentSnapshot.data()['Name'];
       });
     }
-    print(name);
     return name;
   }
 

@@ -110,7 +110,6 @@ class _ChatScreenState extends State<ChatScreen> {
               messageOwner: null,
               date: prevDate));
 
-          print(numOfMessages);
 
           return Scaffold(
             backgroundColor: Theme

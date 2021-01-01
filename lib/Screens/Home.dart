@@ -35,7 +35,6 @@ class _HomeState extends State<Home> {
       setState(() {
         listOfChats = value[0];
         numOfSeenMessages = value[1];
-        print(numOfSeenMessages);
         int i = 0;
         for(String chat_id in listOfChats){
           DisplayChatClass displayChat = DisplayChatClass(chatID: chat_id,chatName: null,numOfMessages: 0,time: null,lastMessage: null,lastMessageOwner: null);
@@ -159,9 +158,13 @@ class _HomeState extends State<Home> {
                     onTap: () {
                       ChatClass selectedClass = ChatClass(
                           name: chats[index].chatName, uid: chats[index].chatID);
-                      prevOpenedChatID = chats[index].chatID;
+
                       Navigator.pushNamed(
-                          context, ChatScreen.id, arguments: selectedClass);
+                          context, ChatScreen.id, arguments: selectedClass).then((value) {
+                            setState(() {
+                              prevOpenedChatID = chats[index].chatID;
+                            });
+                      });
 
                     },
                     child: Container(

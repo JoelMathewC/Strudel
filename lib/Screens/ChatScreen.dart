@@ -51,6 +51,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     double height = MediaQuery. of(context). size. height;
     double width = MediaQuery. of(context). size. width;
+    int numOfMessages = 0;
     List<MessageClass> messages = [];
 
 
@@ -63,11 +64,12 @@ class _ChatScreenState extends State<ChatScreen> {
           return Loading();
         else {
           messages = [];
-
+          numOfMessages = 0;
           int i = 0;
           for (DocumentSnapshot doc in snapshot.data.documents) {
             if (doc['Chat_id'] == thisChat.uid) {
               if (doc['First'] == false) {
+                numOfMessages += 1;
                 MessageClass message = MessageClass(message: doc['Message'],
                     time: doc['TimeStamp'],
                     messageOwner: doc['Owner'],
@@ -107,11 +109,20 @@ class _ChatScreenState extends State<ChatScreen> {
               time: null,
               messageOwner: null,
               date: prevDate));
+
           return Scaffold(
             backgroundColor: Theme
                 .of(context)
                 .canvasColor,
             appBar: AppBar(
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: (){
+                  UserDatabase().updateSeenMessagesCount(auth.FirebaseAuth.instance.currentUser.email, thisChat.uid, numOfMessages).then((value){
+                    Navigator.pop(context,true);
+                  });
+                },
+              ),
               brightness: Brightness.dark,
               backgroundColor: Theme
                   .of(context)

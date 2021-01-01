@@ -34,9 +34,24 @@ class UserDatabase{
   Future<List<dynamic>> returnChatDetails(String email) async {
     List<dynamic> chats_uid;
     Map<dynamic,dynamic> numOfMessages;
-    chats_uid = await listAllChats(email);
-    numOfMessages = await returnNumOfSeenMessages(email);
-    return [chats_uid, numOfMessages];
+    dynamic name;
+    await users.doc(email).get().then((DocumentSnapshot documentSnapshot){
+      chats_uid = documentSnapshot.data()['Chats'];
+      numOfMessages = documentSnapshot.data()['NumOfSeenMessages'];
+      name = documentSnapshot.data()['Name'];
+    });
+    return [chats_uid, numOfMessages, [name]];
+  }
+
+  Future<void> updateSeenMessagesCount(String email,String uid,int numOfMessages) async {
+    List<dynamic> list = await returnChatDetails(email);
+    Map<dynamic,dynamic> map = list[1];
+    map[uid] = numOfMessages;
+    users.doc(email).set({
+      'Name': list[2][0],
+      'Chats':list[0],
+      'NumOfSeenMessages': map,
+    });
   }
 
   Future<dynamic> returnName() async{

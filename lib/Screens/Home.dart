@@ -23,8 +23,9 @@ class _HomeState extends State<Home> {
   auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
   List<dynamic> listOfChats = [];
   List<DisplayChatClass> chats = [];
-  bool loading = true;
   Map<dynamic,int> idToIndex = {};
+  bool loading = true;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -38,14 +39,11 @@ class _HomeState extends State<Home> {
           idToIndex.addAll({chat_id:i});
           ++i;
         }
-        print(listOfChats);
-        print(idToIndex);
         loading = false;
       });
     });
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +54,14 @@ class _HomeState extends State<Home> {
           return Loading();
 
         else {
+          for(DisplayChatClass displayChat in chats){ //Clears the chats list
+            displayChat.numOfMessages = 0;
+            displayChat.chatName = null;
+            displayChat.time = null;
+            displayChat.lastMessage = null;
+            displayChat.lastMessageOwner = null;
+          }
+
           for(DocumentSnapshot doc in snapshot.data.documents){
             if(listOfChats.contains(doc['Chat_id'])){
               if(doc['First'] == true){

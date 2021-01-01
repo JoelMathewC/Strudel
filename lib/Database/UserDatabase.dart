@@ -56,7 +56,7 @@ class UserDatabase{
 
   Future<dynamic> returnName() async{
     String email = auth.FirebaseAuth.instance.currentUser.email;
-    String name;
+    dynamic name;
     await users.doc(email).get().then((DocumentSnapshot documentSnapshot){
       name = documentSnapshot.data()['Name'];
     });
@@ -65,7 +65,7 @@ class UserDatabase{
 
   Future<dynamic> getName(String id) async {
 
-    String name;
+    dynamic name;
 
     DocumentReference doc_ref = users.doc(id);
     print(doc_ref);
@@ -81,14 +81,14 @@ class UserDatabase{
   Future<void> addChatToUser(dynamic id,dynamic chat_id) async{
     List<dynamic> chats = [];
     dynamic name;
-    Map<dynamic,int> numOfSeenMessages = {};
+    Map<dynamic,dynamic> numOfSeenMessages = {};
     await users.doc(id).get().then((DocumentSnapshot documentSnapshot){
       chats = documentSnapshot.data()['Chats'];
       name = documentSnapshot.data()['Name'];
       numOfSeenMessages = documentSnapshot.data()['NumOfSeenMessages'];
     });
     chats.add(chat_id);
-    numOfSeenMessages.addAll({chat_id:0});
+    numOfSeenMessages[chat_id] = 0;
     await users.doc(id).set({
       'Chats': chats,
       'Name' : name,

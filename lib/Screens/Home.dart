@@ -40,7 +40,7 @@ class _HomeState extends State<Home> {
         for(String chat_id in listOfChats){
           DisplayChatClass displayChat = DisplayChatClass(chatID: chat_id,chatName: null,numOfMessages: 0,time: null,lastMessage: null,lastMessageOwner: null);
           chats.add(displayChat);
-          idToIndex.addAll({chat_id:i});
+          idToIndex[chat_id] = i;
           ++i;
         }
         loading = false;
@@ -70,8 +70,8 @@ class _HomeState extends State<Home> {
             if (doc['First'] == true) {
               if(doc['Members'].contains(_auth.currentUser.email) && !(listOfChats.contains(doc['Chat_id']))){
                 listOfChats.add(doc['Chat_id']);
-                idToIndex.addAll({doc['Chat_id']:listOfChats.length - 1});
-                numOfSeenMessages.addAll({doc['Chat_id']:0});
+                idToIndex[doc['Chat_id']] = listOfChats.length-1;
+                numOfSeenMessages[doc['Chat_id']] = 0;
                 DisplayChatClass displayChat = DisplayChatClass(chatID: doc['Chat_id'],chatName: null,numOfMessages: 0,time: null,lastMessage: null,lastMessageOwner: null);
                 chats.add(displayChat);
                 chats[idToIndex[doc['Chat_id']]].chatName = doc['ChatName'];
@@ -104,7 +104,7 @@ class _HomeState extends State<Home> {
             }
           }
           for(DisplayChatClass displayChat in chats){ //For the unseen messages
-            if(displayChat.chatID == prevOpenedChatID){
+            if(displayChat.chatID == prevOpenedChatID){ //To update notifications of the screen that was just opened
               numOfSeenMessages[displayChat.chatID] = displayChat.numOfMessages;
               prevOpenedChatID = null;
             }

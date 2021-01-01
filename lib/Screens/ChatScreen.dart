@@ -20,7 +20,6 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   bool loading = true;
   String name = "";
-  List<String> data = ['Hi','Heyya','How do ya do','Imma doing good','Jaco young man how is life fe hasa and is it but beyond the measure of a common man'];
   String prevIndividual = "";
   String prevDate = "";
   String currentDate = "";
@@ -52,11 +51,12 @@ class _ChatScreenState extends State<ChatScreen> {
 
     double height = MediaQuery. of(context). size. height;
     double width = MediaQuery. of(context). size. width;
+    int numOfMessages = 0;
     List<MessageClass> messages = [];
 
 
     return loading ? Loading(): StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('Chats').doc(thisChat.uid).collection('Messages').orderBy('TimeStamp',descending: true).snapshots(),
+      stream: FirebaseFirestore.instance.collection('ChatStream').orderBy('TimeStamp',descending: true).snapshots(),
       builder:(context,snapshot){
         prevIndividual = "";
         prevDate = "";
@@ -64,44 +64,78 @@ class _ChatScreenState extends State<ChatScreen> {
           return Loading();
         else {
           messages = [];
-
+          numOfMessages = 0;
           int i = 0;
-          for (DocumentSnapshot doc in snapshot.data.documents){
-            MessageClass message = MessageClass(message: doc['Message'],time: doc['TimeStamp'],messageOwner: doc['Owner'],date: null);
-            currentDate = returnDate(message.time);
+          for (DocumentSnapshot doc in snapshot.data.documents) {
+            if (doc['Chat_id'] == thisChat.uid) {
+              if (doc['First'] == false) {
+                numOfMessages += 1;
+                MessageClass message = MessageClass(message: doc['Message'],
+                    time: doc['TimeStamp'],
+                    messageOwner: doc['Owner'],
+                    date: null);
+                currentDate = returnDate(message.time);
 
 
-            if(prevIndividual != message.messageOwner && prevIndividual != name){
-              messages.add(MessageClass(message: null,time: null,messageOwner: prevIndividual,date: null));
-            }
+                if (prevIndividual != message.messageOwner &&
+                    prevIndividual != name) {
+                  messages.add(MessageClass(message: null,
+                      time: null,
+                      messageOwner: prevIndividual,
+                      date: null));
+                }
 
-            if((prevDate != "" && prevDate != currentDate)){
-              messages.add(MessageClass(message: null,time: null,messageOwner: null,date: prevDate));
-            }
+                if ((prevDate != "" && prevDate != currentDate)) {
+                  messages.add(MessageClass(message: null,
+                      time: null,
+                      messageOwner: null,
+                      date: prevDate));
+                }
 
-            prevIndividual = message.messageOwner;
-            prevDate = currentDate;
-            messages.add(message);
-            i = i + 1;
-
-            if(i == snapshot.data.documents.length){
-              if(prevIndividual != name){
-                messages.add(MessageClass(message: null,time: null,messageOwner: prevIndividual,date: null));
+                prevIndividual = message.messageOwner;
+                prevDate = currentDate;
+                messages.add(message);
+                i = i + 1;
               }
-              messages.add(MessageClass(message: null,time: null,messageOwner: null,date: prevDate));
             }
           }
+          if (prevIndividual != name) {
+            messages.add(MessageClass(message: null,
+                time: null,
+                messageOwner: prevIndividual,
+                date: null));
+          }
+          messages.add(MessageClass(message: null,
+              time: null,
+              messageOwner: null,
+              date: prevDate));
+
+
           return Scaffold(
-            backgroundColor: Theme.of(context).canvasColor,
+            backgroundColor: Theme
+                .of(context)
+                .canvasColor,
             appBar: AppBar(
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: (){
+                  UserDatabase().updateSeenMessagesCount(auth.FirebaseAuth.instance.currentUser.email, thisChat.uid, numOfMessages).then((value){
+                    Navigator.pop(context,true);
+                  });
+                },
+              ),
               brightness: Brightness.dark,
-              backgroundColor: Theme.of(context).canvasColor,
+              backgroundColor: Theme
+                  .of(context)
+                  .canvasColor,
               title: Text(thisChat.name,
                 style: TextStyle(
                   color: Colors.white,
                 ),),
               iconTheme: IconThemeData(
-                color: Theme.of(context).primaryColor
+                  color: Theme
+                      .of(context)
+                      .primaryColor
               ),
             ),
             body: SingleChildScrollView(
@@ -115,23 +149,24 @@ class _ChatScreenState extends State<ChatScreen> {
                         padding: EdgeInsets.all(10.0),
                         child: ListView.builder(
 
-                          reverse: true,
+                            reverse: true,
                             itemCount: messages.length,
                             itemBuilder: (context, index) {
                               MessageClass message = messages[index];
 
-                              if (message.message != null){
-                                return ChatMessage(width: width,message: message,byUser: message.messageOwner == name,);
+                              if (message.message != null) {
+                                return ChatMessage(width: width,
+                                  message: message,
+                                  byUser: message.messageOwner == name,);
                               }
 
-                              else if(message.messageOwner != null){
-                                return PrintOwnerNameWidget(width: width,message: message,);
+                              else if (message.messageOwner != null) {
+                                return PrintOwnerNameWidget(
+                                  width: width, message: message,);
                               }
-                               else{
-                                 return PrintDateWidget(date: message.date,);
+                              else {
+                                return PrintDateWidget(date: message.date,);
                               }
-
-
                             }),
                       )
                   ),
@@ -147,24 +182,34 @@ class _ChatScreenState extends State<ChatScreen> {
                           width: (width - 80),
                           child: TextField(
                             style: TextStyle(
-                              color: Theme.of(context).primaryColor,
+                              color: Theme
+                                  .of(context)
+                                  .primaryColor,
                             ),
                             controller: messageController,
-                            cursorColor: Theme.of(context).accentColor,
+                            cursorColor: Theme
+                                .of(context)
+                                .accentColor,
                             decoration: InputDecoration(
-                              filled: true,
-                                fillColor: Theme.of(context).primaryColorDark,
+                                filled: true,
+                                fillColor: Theme
+                                    .of(context)
+                                    .primaryColorDark,
                                 hintText: 'Type Something...',
                                 hintStyle: TextStyle(
                                   color: Colors.grey,
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                        color:Theme.of(context).primaryColorDark, width: 2.0)
+                                        color: Theme
+                                            .of(context)
+                                            .primaryColorDark, width: 2.0)
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                        color: Theme.of(context).accentColor, width: 2.0)
+                                        color: Theme
+                                            .of(context)
+                                            .accentColor, width: 2.0)
                                 )
                             ),
 
@@ -175,12 +220,18 @@ class _ChatScreenState extends State<ChatScreen> {
                           height: 50,
                           width: 50,
                           child: RawMaterialButton(onPressed: () {
-                            MessageClass messageToSend = MessageClass(message: messageController.text,messageOwner: name,time: Timestamp.fromDate(DateTime.now()));
+                            MessageClass messageToSend = MessageClass(
+                                message: messageController.text,
+                                messageOwner: name,
+                                time: Timestamp.fromDate(DateTime.now()));
                             messageController.clear();
-                            ChatDatabase().sendMessage(messageToSend, thisChat.uid);
+                            ChatDatabase().sendMessage(
+                                messageToSend, thisChat.uid);
                           },
                               elevation: 2.0,
-                              fillColor: Theme.of(context).accentColor,
+                              fillColor: Theme
+                                  .of(context)
+                                  .accentColor,
                               child: Icon(Icons.send, size: 25,
                                 color: Colors.white,
                               ),
@@ -250,7 +301,7 @@ class _UserMessageState extends State<UserMessage> {
                   child: Align(
                     alignment: Alignment.bottomRight,
                     child: Text(
-                      toDateString(widget.message.time), style: TextStyle(
+                      toTimeString(widget.message.time), style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontSize: 14.0,
                     ),),
@@ -316,7 +367,7 @@ class _OtherMessageState extends State<OtherMessage> {
                     alignment: Alignment
                         .bottomRight,
                     child: Text(
-                      toDateString(
+                      toTimeString(
                           widget.message.time),
                       style: TextStyle(
                         color: Theme
@@ -426,7 +477,7 @@ class _PrintDateWidgetState extends State<PrintDateWidget> {
 
 
 //Functions
-String toDateString(Timestamp t){
+String toTimeString(Timestamp t){
   var date = DateTime.fromMicrosecondsSinceEpoch(t.microsecondsSinceEpoch);
   String time = date.toString().split(' ')[1];
   List<String> val = time.split(':');

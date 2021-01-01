@@ -77,8 +77,9 @@ class _AddChatScreenState extends State<AddChatScreen> {
            setState(() {
              loading = true;
            });
-            await ChatDatabase().createNewChat(nameController.text, participants,participants_id);
+           await ChatDatabase().createNewChat(nameController.text, participants,participants_id);
            Navigator.pop(context);
+
          }
         },
         backgroundColor: Theme.of(context).accentColor,

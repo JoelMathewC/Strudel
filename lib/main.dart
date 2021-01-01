@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
@@ -29,7 +30,7 @@ class _AppState extends State<App> {
     try {
       // Wait for Firebase to initialize and set `_initialized` state to true
       await Firebase.initializeApp();
-      setState(() {
+      setState((){
         _initialized = true;
       });
     } catch (e) {
@@ -46,6 +47,7 @@ class _AppState extends State<App> {
     super.initState();
   }
 
+
   @override
   Widget build(BuildContext context) {
     // Show error message if initialization failed
@@ -54,7 +56,9 @@ class _AppState extends State<App> {
       statusBarIconBrightness: Brightness.light
     ));
 
+
     if (_error) {
+
       return MaterialApp(
           home: Scaffold(
               appBar: AppBar(

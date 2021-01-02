@@ -32,6 +32,9 @@ dependencies:
   cloud_firestore: ^0.14.4
   rflutter_alert: ^1.0.8
   flutter_spinkit: "^4.1.2"
+  firebase_messaging: ^7.0.3
+  flutter_local_notifications: ^3.0.2
+  fluttertoast: ^7.0.2
 
 
 

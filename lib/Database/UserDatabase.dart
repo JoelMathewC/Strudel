@@ -12,6 +12,7 @@ class UserDatabase{
         'Name': Name,
         'Chats':[],
         'NumOfSeenMessages': {},
+        'ChattingWith': null,
     });
   }
 
@@ -47,10 +48,9 @@ class UserDatabase{
     List<dynamic> list = await returnChatDetails(email);
     Map<dynamic,dynamic> map = list[1];
     map[uid] = numOfMessages;
-    users.doc(email).set({
-      'Name': list[2][0],
-      'Chats':list[0],
+    users.doc(email).update({
       'NumOfSeenMessages': map,
+      'ChattingWith': null, //Since control moves to home page
     });
   }
 
@@ -78,19 +78,22 @@ class UserDatabase{
 
   Future<void> addChatToUser(dynamic id,dynamic chat_id) async{
     List<dynamic> chats = [];
-    dynamic name;
     Map<dynamic,dynamic> numOfSeenMessages = {};
     await users.doc(id).get().then((DocumentSnapshot documentSnapshot){
       chats = documentSnapshot.data()['Chats'];
-      name = documentSnapshot.data()['Name'];
       numOfSeenMessages = documentSnapshot.data()['NumOfSeenMessages'];
     });
     chats.add(chat_id);
     numOfSeenMessages[chat_id] = 0;
-    await users.doc(id).set({
+    await users.doc(id).update({
       'Chats': chats,
-      'Name' : name,
       'NumOfSeenMessages':numOfSeenMessages,
+    });
+  }
+
+  Future<void> updateChattingWith(dynamic chat_uid) async {
+    await users.doc(auth.FirebaseAuth.instance.currentUser.email).update({
+      'ChattingWith': chat_uid,
     });
   }
 

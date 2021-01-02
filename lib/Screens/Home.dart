@@ -153,7 +153,9 @@ class _HomeState extends State<Home> {
               }
               else if(listOfChats.contains(doc['Chat_id'])){
               chats[idToIndex[doc['Chat_id']]].chatName = doc['ChatName'];
-              chats[idToIndex[doc['Chat_id']]].time = doc['TimeStamp'];
+              if(chats[idToIndex[doc['Chat_id']]].time == null) {
+                chats[idToIndex[doc['Chat_id']]].time = doc['TimeStamp'];
+              }
               }
             }
             else {
@@ -162,8 +164,7 @@ class _HomeState extends State<Home> {
                 if (chats[idToIndex[doc['Chat_id']]].lastMessage == null) {
                   chats[idToIndex[doc['Chat_id']]].lastMessage = doc['Message'];
                   chats[idToIndex[doc['Chat_id']]].time = doc['TimeStamp'];
-                  chats[idToIndex[doc['Chat_id']]].lastMessageOwner =
-                  doc['Owner'];
+                  chats[idToIndex[doc['Chat_id']]].lastMessageOwner = doc['Owner'];
                 }
               }
             }
@@ -184,6 +185,10 @@ class _HomeState extends State<Home> {
             }
             displayChat.numOfMessages -= numOfSeenMessages[displayChat.chatID];
           }
+
+          chats.sort((a,b) => b.time.compareTo(a.time)); //Sorts Chats according to time
+
+
           return Scaffold(
             backgroundColor: Theme.of(context).canvasColor,
             appBar: AppBar(

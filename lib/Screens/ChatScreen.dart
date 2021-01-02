@@ -118,10 +118,10 @@ class _ChatScreenState extends State<ChatScreen> {
             appBar: AppBar(
               leading: IconButton(
                 icon: Icon(Icons.arrow_back),
-                onPressed: (){
-                  UserDatabase().updateSeenMessagesCount(auth.FirebaseAuth.instance.currentUser.email, thisChat.uid, numOfMessages).then((value){
-                    Navigator.pop(context,true);
-                  });
+                onPressed: () async {
+                  Navigator.pop(context,true);
+                  await UserDatabase().updateSeenMessagesCount(auth.FirebaseAuth.instance.currentUser.email, thisChat.uid, numOfMessages);
+
                 },
               ),
               brightness: Brightness.dark,

@@ -27,7 +27,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    UserDatabase().returnName().then((value){
+    UserDatabase().returnName().then((value) async {
       setState(() {
         name = value;
         loading = false;

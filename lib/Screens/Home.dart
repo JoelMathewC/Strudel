@@ -230,17 +230,16 @@ class _HomeState extends State<Home> {
                 itemCount: chats.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       ChatClass selectedClass = ChatClass(
                           name: chats[index].chatName, uid: chats[index].chatID);
-
                       Navigator.pushNamed(
                           context, ChatScreen.id, arguments: selectedClass).then((value) {
                             setState(() {
                               prevOpenedChatID = chats[index].chatID;
                             });
                       });
-
+                      await UserDatabase().updateChattingWith(chats[index].chatID);
                     },
                     child: Container(
 

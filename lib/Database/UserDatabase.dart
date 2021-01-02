@@ -12,6 +12,7 @@ class UserDatabase{
         'Name': Name,
         'Chats':[],
         'NumOfSeenMessages': {},
+        'ChattingWith': null,
     });
   }
 
@@ -49,6 +50,7 @@ class UserDatabase{
     map[uid] = numOfMessages;
     users.doc(email).update({
       'NumOfSeenMessages': map,
+      'ChattingWith': null, //Since control moves to home page
     });
   }
 
@@ -86,6 +88,12 @@ class UserDatabase{
     await users.doc(id).update({
       'Chats': chats,
       'NumOfSeenMessages':numOfSeenMessages,
+    });
+  }
+
+  Future<void> updateChattingWith(dynamic chat_uid) async {
+    await users.doc(auth.FirebaseAuth.instance.currentUser.email).update({
+      'ChattingWith': chat_uid,
     });
   }
 

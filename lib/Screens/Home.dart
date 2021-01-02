@@ -186,7 +186,7 @@ class _HomeState extends State<Home> {
             displayChat.numOfMessages -= numOfSeenMessages[displayChat.chatID];
           }
 
-          //chats.sort((a,b) => b.time.compareTo(a.time)); //Sorts Chats according to time
+
 
 
           return Scaffold(

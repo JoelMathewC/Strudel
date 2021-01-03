@@ -36,20 +36,23 @@ class _HomeState extends State<Home> {
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
+
+//------------------------------------------------- START OF NOTIFICATIONS --------------------------------------------------------------------
+
   void registerNotification() {
 
     firebaseMessaging.requestNotificationPermissions();
 
-    firebaseMessaging.configure(onMessage: (Map<String, dynamic> message) {
+    firebaseMessaging.configure(onMessage: (Map<String, dynamic> message) { //Called when app is in foreground
       print('onMessage: $message');
       Platform.isAndroid
           ? showNotification(message['notification'])
           : showNotification(message['aps']['alert']);
       return;
-    }, onResume: (Map<String, dynamic> message) {
+    }, onResume: (Map<String, dynamic> message) { //When App is in background
       print('onResume: $message');
       return;
-    }, onLaunch: (Map<String, dynamic> message) {
+    }, onLaunch: (Map<String, dynamic> message) { //When app is terminated
       print('onLaunch: $message');
       return;
     });
@@ -100,6 +103,8 @@ class _HomeState extends State<Home> {
 //        0, 'plain title', 'plain body', platformChannelSpecifics,
 //        payload: 'item x');
   }
+
+//------------------------------------------------- END OF NOTIFICATIONS ----------------------------------------------------------------------------------------
 
   @override
   void initState() {

@@ -132,12 +132,15 @@ class _HomeState extends State<Home> {
           return Loading();
 
         else {
+          int i = 0;
           for(DisplayChatClass displayChat in chats){ //Clears the chats list
             displayChat.numOfMessages = 0;
             displayChat.chatName = null;
             displayChat.time = null;
             displayChat.lastMessage = null;
             displayChat.lastMessageOwner = null;
+            displayChat.chatID = listOfChats[i];
+            ++i;
           }
 
           for(DocumentSnapshot doc in snapshot.data.documents){ //Updates Messages and New Groups
@@ -186,7 +189,7 @@ class _HomeState extends State<Home> {
             displayChat.numOfMessages -= numOfSeenMessages[displayChat.chatID];
           }
 
-
+          chats.sort((a,b) => b.time.compareTo(a.time));
 
 
           return Scaffold(

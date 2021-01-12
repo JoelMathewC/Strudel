@@ -7,12 +7,13 @@ class UserDatabase{
 
   final CollectionReference users = FirebaseFirestore.instance.collection('Users');
 
-  Future<void> createUser(String email, String Name) async {
+  Future<void> createUser(String email, String Name,String publicKey) async {
     await users.doc(email).set({
         'Name': Name,
         'Chats':[],
         'NumOfSeenMessages': {},
         'ChattingWith': null,
+        'PublicKey': publicKey,
     });
   }
 

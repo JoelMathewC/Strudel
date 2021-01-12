@@ -35,6 +35,8 @@ dependencies:
   firebase_messaging: ^7.0.3
   flutter_local_notifications: ^3.0.2
   fluttertoast: ^7.0.2
+  path_provider: ^1.6.24
+  rsa_encrypt: ^1.0.5
 
 
 

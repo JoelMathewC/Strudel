@@ -15,8 +15,11 @@ import 'package:strudel/Screens/SettingsPage.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
+import 'package:strudel/Security/RSA.dart';
+import 'package:strudel/Security/WritingData.dart';
 import 'Loading.dart';
+import 'package:pointycastle/api.dart' as crypto;
+
 
 
 class Home extends StatefulWidget {
@@ -35,6 +38,7 @@ class _HomeState extends State<Home> {
   String prevOpenedChatID = "";
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  crypto.PrivateKey privateKey;
 
 
 //------------------------------------------------- START OF NOTIFICATIONS --------------------------------------------------------------------
@@ -58,7 +62,6 @@ class _HomeState extends State<Home> {
     });
 
     firebaseMessaging.getToken().then((token) async {
-      print('token: $token');
       await FirebaseFirestore.instance
           .collection('Users')
           .doc(FirebaseAuth.instance.currentUser.email)
@@ -123,9 +126,15 @@ class _HomeState extends State<Home> {
         loading = false;
       });
     });
+    WritingData().readData().then((value){
+      setState(() {
+        privateKey = RSA().parsePrivateKeyFromPem(value['PrivateKey']);
+        print(privateKey);
+      });
+    });
     super.initState();
-    registerNotification();
-    configLocalNotification();
+    // registerNotification();
+    // configLocalNotification();
   }
 
   @override

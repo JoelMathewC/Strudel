@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/cupertino.dart';
+import 'package:pointycastle/api.dart' as crypto;
+import 'package:strudel/Security/RSA.dart';
 
 
 class UserDatabase{
@@ -77,12 +79,14 @@ class UserDatabase{
     return name;
   }
 
-  Future<void> addChatToUser(dynamic id,dynamic chat_id) async{
+  Future<List<String>> addChatToUser(dynamic id,dynamic chat_id,crypto.PrivateKey privateKey) async{
     List<dynamic> chats = [];
     Map<dynamic,dynamic> numOfSeenMessages = {};
+    String publicKey;
     await users.doc(id).get().then((DocumentSnapshot documentSnapshot){
       chats = documentSnapshot.data()['Chats'];
       numOfSeenMessages = documentSnapshot.data()['NumOfSeenMessages'];
+      publicKey = documentSnapshot.data()['PublicKey'];
     });
     chats.add(chat_id);
     numOfSeenMessages[chat_id] = 0;
@@ -90,6 +94,7 @@ class UserDatabase{
       'Chats': chats,
       'NumOfSeenMessages':numOfSeenMessages,
     });
+    return RSA().dataEncrypt(RSA().encodePrivateKeyToPem(privateKey),RSA().parsePublicKeyFromPem(publicKey));
   }
 
   Future<void> updateChattingWith(dynamic chat_uid) async {
@@ -97,5 +102,7 @@ class UserDatabase{
       'ChattingWith': chat_uid,
     });
   }
+
+
 
 }

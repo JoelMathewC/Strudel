@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:strudel/Database/ChatClass.dart';
 import 'package:strudel/Database/UserDatabase.dart';
+import 'package:pointycastle/api.dart' as crypto;
+import 'package:strudel/Security/RSA.dart';
 
 class ChatDatabase{
 
@@ -19,6 +21,7 @@ class ChatDatabase{
     }
 
     Future<void> createNewChat(dynamic groupName, List<dynamic> participants,List<dynamic> participants_id) async {
+      crypto.AsymmetricKeyPair keyPair = await RSA().getKeyPair();
       dynamic id = chats.doc().id;
       await chats.doc(id).set({
         'ChatName': groupName,
@@ -26,12 +29,19 @@ class ChatDatabase{
         'First':true,
         'TimeStamp': Timestamp.fromDate(DateTime.now()),
         'Members': participants_id,
+        'PublicKey': RSA().encodePublicKeyToPem(keyPair.publicKey),
       });
-      await addChatToUsers(participants_id,id);
+      await addChatToUsers(participants_id,id,keyPair.privateKey);
     }
-    Future<void> addChatToUsers(List<dynamic> participants_id,dynamic chat_id) async {
+    Future<void> addChatToUsers(List<dynamic> participants_id,dynamic chat_id,crypto.PrivateKey privateKey) async {
+      Map<String,List<String>> encryptedPrivateKey = {};
+      List<String> privateKeyForUser = [];
       for(dynamic id in participants_id){
-        await UserDatabase().addChatToUser(id,chat_id);
+        privateKeyForUser =  await UserDatabase().addChatToUser(id,chat_id,privateKey);
+        encryptedPrivateKey[id] = privateKeyForUser;
       }
+      await chats.doc(chat_id).update({
+        'GroupPrivateKey': encryptedPrivateKey,
+      });
     }
 }

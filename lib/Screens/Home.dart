@@ -112,10 +112,14 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     // TODO: implement initState
-    print(_auth.currentUser.email);
+    WritingData().readData().then((value){
+      setState(() {
+        userPrivateKey = RSA().parsePrivateKeyFromPem(value['PrivateKey']);
+        print(userPrivateKey);
+      });
+    });
     UserDatabase().returnChatDetails(_auth.currentUser.email).then((value){
       setState(() {
-        name = value[2][0];
         listOfChats = value[0];
         numOfSeenMessages = value[1];
         int i = 0;
@@ -128,35 +132,15 @@ class _HomeState extends State<Home> {
         loading = false;
       });
     });
-    WritingData().readData().then((value){
-      setState(() {
-        userPrivateKey = RSA().parsePrivateKeyFromPem(value['PrivateKey']);
-        print(userPrivateKey);
-      });
-    });
     super.initState();
+
     // registerNotification();
     // configLocalNotification();
   }
 
   @override
   Widget build(BuildContext context) {
-    if(name == null){
-      UserDatabase().returnChatDetails(_auth.currentUser.email).then((value){
-        setState(() {
-          listOfChats = value[0];
-          numOfSeenMessages = value[1];
-          int i = 0;
-          for(String chat_id in listOfChats){
-            DisplayChatClass displayChat = DisplayChatClass(chatID: chat_id,chatName: null,numOfMessages: 0,time: null,lastMessage: null,lastMessageOwner: null);
-            chats.add(displayChat);
-            idToIndex[chat_id] = i;
-            ++i;
-          }
-          loading = false;
-        });
-      });
-    }
+
     return  loading? Loading():StreamBuilder(
       stream: FirebaseFirestore.instance.collection('ChatStream').orderBy('TimeStamp',descending: true).snapshots(),
       builder: (context,snapshot){

@@ -118,6 +118,7 @@ class _HomeState extends State<Home> {
         print(userPrivateKey);
       });
     });
+    print(userPrivateKey);
     UserDatabase().returnChatDetails(_auth.currentUser.email).then((value){
       setState(() {
         listOfChats = value[0];

@@ -1,7 +1,3 @@
-
-
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
@@ -9,6 +5,7 @@ import 'package:strudel/Database/ChatClass.dart';
 import 'package:strudel/Database/ChatDatabase.dart';
 import 'package:strudel/Database/UserDatabase.dart';
 import 'package:strudel/Screens/Loading.dart';
+import 'package:strudel/Security/RSA.dart';
 
 
 class ChatScreen extends StatefulWidget {
@@ -48,12 +45,14 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final ChatClass thisChat = ModalRoute.of(context).settings.arguments;
-
     double height = MediaQuery. of(context). size. height;
     double width = MediaQuery. of(context). size. width;
     int numOfMessages = 0;
     List<MessageClass> messages = [];
 
+    ChatDatabase().returnMembersPublicKeys(thisChat.uid).then((Map<dynamic,dynamic> value){
+      thisChat.PublicKeys = value;
+    });
 
     return loading ? Loading(): StreamBuilder(
       stream: FirebaseFirestore.instance.collection('ChatStream').orderBy('TimeStamp',descending: true).snapshots(),
@@ -70,7 +69,7 @@ class _ChatScreenState extends State<ChatScreen> {
             if (doc['Chat_id'] == thisChat.uid) {
               if (doc['First'] == false) {
                 numOfMessages += 1;
-                MessageClass message = MessageClass(message: doc['Message'],
+                MessageClass message = MessageClass(message: RSA().dataDecrypt(doc['Message'][auth.FirebaseAuth.instance.currentUser.email],thisChat.privateKey),
                     time: doc['TimeStamp'],
                     messageOwner: doc['Owner'],
                     date: null);
@@ -226,7 +225,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 time: Timestamp.fromDate(DateTime.now()));
                             messageController.clear();
                             ChatDatabase().sendMessage(
-                                messageToSend, thisChat.uid);
+                                messageToSend, thisChat.uid,thisChat.PublicKeys);
                           },
                               elevation: 2.0,
                               fillColor: Theme

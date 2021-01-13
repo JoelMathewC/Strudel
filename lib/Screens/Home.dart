@@ -38,8 +38,8 @@ class _HomeState extends State<Home> {
   String prevOpenedChatID = "";
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  crypto.PrivateKey privateKey;
-
+  crypto.PrivateKey userPrivateKey;
+  dynamic name;
 
 //------------------------------------------------- START OF NOTIFICATIONS --------------------------------------------------------------------
 
@@ -112,6 +112,12 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     // TODO: implement initState
+    WritingData().readData().then((value){
+      setState(() {
+        userPrivateKey = RSA().parsePrivateKeyFromPem(value['PrivateKey']);
+        print(userPrivateKey);
+      });
+    });
     UserDatabase().returnChatDetails(_auth.currentUser.email).then((value){
       setState(() {
         listOfChats = value[0];
@@ -126,19 +132,15 @@ class _HomeState extends State<Home> {
         loading = false;
       });
     });
-    WritingData().readData().then((value){
-      setState(() {
-        privateKey = RSA().parsePrivateKeyFromPem(value['PrivateKey']);
-        print(privateKey);
-      });
-    });
     super.initState();
+
     // registerNotification();
     // configLocalNotification();
   }
 
   @override
   Widget build(BuildContext context) {
+
     return  loading? Loading():StreamBuilder(
       stream: FirebaseFirestore.instance.collection('ChatStream').orderBy('TimeStamp',descending: true).snapshots(),
       builder: (context,snapshot){
@@ -179,7 +181,7 @@ class _HomeState extends State<Home> {
               if (listOfChats.contains(doc['Chat_id'])) {
                 chats[idToIndex[doc['Chat_id']]].numOfMessages += 1;
                 if (chats[idToIndex[doc['Chat_id']]].lastMessage == null) {
-                  chats[idToIndex[doc['Chat_id']]].lastMessage = doc['Message'];
+                  chats[idToIndex[doc['Chat_id']]].lastMessage = RSA().dataDecrypt(doc['Message'][_auth.currentUser.email], userPrivateKey);
                   chats[idToIndex[doc['Chat_id']]].time = doc['TimeStamp'];
                   chats[idToIndex[doc['Chat_id']]].lastMessageOwner = doc['Owner'];
                 }
@@ -254,7 +256,7 @@ class _HomeState extends State<Home> {
                   return GestureDetector(
                     onTap: () async {
                       ChatClass selectedClass = ChatClass(
-                          name: chats[index].chatName, uid: chats[index].chatID);
+                          name: chats[index].chatName, uid: chats[index].chatID,privateKey: userPrivateKey,PublicKeys:null);
                       Navigator.pushNamed(
                           context, ChatScreen.id, arguments: selectedClass).then((value) {
                             setState(() {

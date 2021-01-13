@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/cupertino.dart';
+import 'package:pointycastle/api.dart' as crypto;
+import 'package:strudel/Security/RSA.dart';
 
 
 class UserDatabase{
@@ -34,14 +36,17 @@ class UserDatabase{
   }
 
   Future<List<dynamic>> returnChatDetails(String email) async {
-    List<dynamic> chats_uid;
-    Map<dynamic,dynamic> numOfMessages;
-    dynamic name;
+    List<dynamic> chats_uid = [];
+    Map<dynamic,dynamic> numOfMessages = {};
+    dynamic name = null;
     await users.doc(email).get().then((DocumentSnapshot documentSnapshot){
-      chats_uid = documentSnapshot.data()['Chats'];
-      numOfMessages = documentSnapshot.data()['NumOfSeenMessages'];
-      name = documentSnapshot.data()['Name'];
+      if(documentSnapshot.data() != null) {
+        chats_uid = documentSnapshot.data()['Chats'];
+        numOfMessages = documentSnapshot.data()['NumOfSeenMessages'];
+        name = documentSnapshot.data()['Name'];
+      }
     });
+
     return [chats_uid, numOfMessages, [name]];
   }
 
@@ -77,12 +82,14 @@ class UserDatabase{
     return name;
   }
 
-  Future<void> addChatToUser(dynamic id,dynamic chat_id) async{
+  Future<String> addChatToUser(dynamic id,dynamic chat_id) async{
     List<dynamic> chats = [];
     Map<dynamic,dynamic> numOfSeenMessages = {};
+    String publicKey;
     await users.doc(id).get().then((DocumentSnapshot documentSnapshot){
       chats = documentSnapshot.data()['Chats'];
       numOfSeenMessages = documentSnapshot.data()['NumOfSeenMessages'];
+      publicKey = documentSnapshot.data()['PublicKey'];
     });
     chats.add(chat_id);
     numOfSeenMessages[chat_id] = 0;
@@ -90,6 +97,9 @@ class UserDatabase{
       'Chats': chats,
       'NumOfSeenMessages':numOfSeenMessages,
     });
+
+    return publicKey;
+
   }
 
   Future<void> updateChattingWith(dynamic chat_uid) async {
@@ -97,5 +107,7 @@ class UserDatabase{
       'ChattingWith': chat_uid,
     });
   }
+
+
 
 }

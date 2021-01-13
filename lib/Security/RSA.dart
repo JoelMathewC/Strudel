@@ -185,7 +185,7 @@ class RSA{
     return encrypted;
   }
 
-  String dataDecrypt(List<String> encryptedData, RSAPrivateKey privateKey){
+  String dataDecrypt(List<dynamic> encryptedData, RSAPrivateKey privateKey){
     String decrypted = "";
     int i = 0;
 

@@ -39,6 +39,7 @@ class _HomeState extends State<Home> {
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   crypto.PrivateKey userPrivateKey;
+  dynamic name;
 
 //------------------------------------------------- START OF NOTIFICATIONS --------------------------------------------------------------------
 
@@ -111,8 +112,10 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     // TODO: implement initState
+    print(_auth.currentUser.email);
     UserDatabase().returnChatDetails(_auth.currentUser.email).then((value){
       setState(() {
+        name = value[2][0];
         listOfChats = value[0];
         numOfSeenMessages = value[1];
         int i = 0;
@@ -138,6 +141,22 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    if(name == null){
+      UserDatabase().returnChatDetails(_auth.currentUser.email).then((value){
+        setState(() {
+          listOfChats = value[0];
+          numOfSeenMessages = value[1];
+          int i = 0;
+          for(String chat_id in listOfChats){
+            DisplayChatClass displayChat = DisplayChatClass(chatID: chat_id,chatName: null,numOfMessages: 0,time: null,lastMessage: null,lastMessageOwner: null);
+            chats.add(displayChat);
+            idToIndex[chat_id] = i;
+            ++i;
+          }
+          loading = false;
+        });
+      });
+    }
     return  loading? Loading():StreamBuilder(
       stream: FirebaseFirestore.instance.collection('ChatStream').orderBy('TimeStamp',descending: true).snapshots(),
       builder: (context,snapshot){
@@ -252,7 +271,6 @@ class _HomeState extends State<Home> {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () async {
-                      //Map<dynamic,dynamic> publicKeys = await ChatDatabase().returnMembersPublicKeys(chats[index].chatID);
                       ChatClass selectedClass = ChatClass(
                           name: chats[index].chatName, uid: chats[index].chatID,privateKey: userPrivateKey,PublicKeys:null);
                       Navigator.pushNamed(

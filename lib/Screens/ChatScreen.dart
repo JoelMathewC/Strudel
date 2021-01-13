@@ -50,7 +50,9 @@ class _ChatScreenState extends State<ChatScreen> {
     int numOfMessages = 0;
     List<MessageClass> messages = [];
 
-
+    ChatDatabase().returnMembersPublicKeys(thisChat.uid).then((Map<dynamic,dynamic> value){
+      thisChat.PublicKeys = value;
+    });
 
     return loading ? Loading(): StreamBuilder(
       stream: FirebaseFirestore.instance.collection('ChatStream').orderBy('TimeStamp',descending: true).snapshots(),

@@ -252,9 +252,9 @@ class _HomeState extends State<Home> {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () async {
-                      Map<dynamic,dynamic> publicKeys = await ChatDatabase().returnMembersPublicKeys(chats[index].chatID);
+                      //Map<dynamic,dynamic> publicKeys = await ChatDatabase().returnMembersPublicKeys(chats[index].chatID);
                       ChatClass selectedClass = ChatClass(
-                          name: chats[index].chatName, uid: chats[index].chatID,privateKey: userPrivateKey,PublicKeys: publicKeys);
+                          name: chats[index].chatName, uid: chats[index].chatID,privateKey: userPrivateKey,PublicKeys:null);
                       Navigator.pushNamed(
                           context, ChatScreen.id, arguments: selectedClass).then((value) {
                             setState(() {

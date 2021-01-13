@@ -79,7 +79,7 @@ class UserDatabase{
     return name;
   }
 
-  Future<List<String>> addChatToUser(dynamic id,dynamic chat_id,crypto.PrivateKey privateKey) async{
+  Future<String> addChatToUser(dynamic id,dynamic chat_id) async{
     List<dynamic> chats = [];
     Map<dynamic,dynamic> numOfSeenMessages = {};
     String publicKey;
@@ -94,7 +94,9 @@ class UserDatabase{
       'Chats': chats,
       'NumOfSeenMessages':numOfSeenMessages,
     });
-    return RSA().dataEncrypt(RSA().encodePrivateKeyToPem(privateKey),RSA().parsePublicKeyFromPem(publicKey));
+
+    return publicKey;
+
   }
 
   Future<void> updateChattingWith(dynamic chat_uid) async {

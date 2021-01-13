@@ -38,8 +38,8 @@ class _HomeState extends State<Home> {
   String prevOpenedChatID = "";
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  crypto.PrivateKey privateKey;
-
+  crypto.PrivateKey userPrivateKey;
+  Map<String,crypto.PrivateKey> chatPrivateKey = {};
 
 //------------------------------------------------- START OF NOTIFICATIONS --------------------------------------------------------------------
 
@@ -128,8 +128,8 @@ class _HomeState extends State<Home> {
     });
     WritingData().readData().then((value){
       setState(() {
-        privateKey = RSA().parsePrivateKeyFromPem(value['PrivateKey']);
-        print(privateKey);
+        userPrivateKey = RSA().parsePrivateKeyFromPem(value['PrivateKey']);
+        print(userPrivateKey);
       });
     });
     super.initState();
@@ -163,6 +163,7 @@ class _HomeState extends State<Home> {
                 listOfChats.add(doc['Chat_id']);
                 idToIndex[doc['Chat_id']] = listOfChats.length-1;
                 numOfSeenMessages[doc['Chat_id']] = 0;
+                //chatPrivateKey[doc['Chat_id']] = RSA().parsePrivateKeyFromPem(RSA().dataDecrypt(doc['GroupPrivateKey'][_auth.currentUser.email], userPrivateKey));
                 DisplayChatClass displayChat = DisplayChatClass(chatID: doc['Chat_id'],chatName: null,numOfMessages: 0,time: null,lastMessage: null,lastMessageOwner: null);
                 chats.add(displayChat);
                 chats[idToIndex[doc['Chat_id']]].chatName = doc['ChatName'];
@@ -179,7 +180,7 @@ class _HomeState extends State<Home> {
               if (listOfChats.contains(doc['Chat_id'])) {
                 chats[idToIndex[doc['Chat_id']]].numOfMessages += 1;
                 if (chats[idToIndex[doc['Chat_id']]].lastMessage == null) {
-                  chats[idToIndex[doc['Chat_id']]].lastMessage = doc['Message'];
+                  chats[idToIndex[doc['Chat_id']]].lastMessage = RSA().dataDecrypt(doc['Message'], userPrivateKey);
                   chats[idToIndex[doc['Chat_id']]].time = doc['TimeStamp'];
                   chats[idToIndex[doc['Chat_id']]].lastMessageOwner = doc['Owner'];
                 }

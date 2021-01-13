@@ -6,8 +6,8 @@ import 'package:strudel/Security/RSA.dart';
 
 class ChatDatabase{
 
-    final CollectionReference chats = FirebaseFirestore.instance.collection('ChatStream');
-
+    final CollectionReference chats = FirebaseFirestore.instance.collection('ChatStream'); //ChatStream
+    final CollectionReference chatCollection = FirebaseFirestore.instance.collection('Chats');
 
 
     Future<void> sendMessage(MessageClass message,String uid) async{
@@ -21,7 +21,6 @@ class ChatDatabase{
     }
 
     Future<void> createNewChat(dynamic groupName, List<dynamic> participants,List<dynamic> participants_id) async {
-      crypto.AsymmetricKeyPair keyPair = await RSA().getKeyPair();
       dynamic id = chats.doc().id;
       await chats.doc(id).set({
         'ChatName': groupName,
@@ -29,19 +28,23 @@ class ChatDatabase{
         'First':true,
         'TimeStamp': Timestamp.fromDate(DateTime.now()),
         'Members': participants_id,
-        'PublicKey': RSA().encodePublicKeyToPem(keyPair.publicKey),
       });
-      await addChatToUsers(participants_id,id,keyPair.privateKey);
+      Map<String,String> membersPublicKeys = await addChatToUsers(participants_id,id);
+      await chatCollection.doc(id).set({
+        'ChatName': groupName,
+        'Chat_id': id,
+        'Members': participants_id,
+        'PublicKeys': membersPublicKeys,
+      });
     }
-    Future<void> addChatToUsers(List<dynamic> participants_id,dynamic chat_id,crypto.PrivateKey privateKey) async {
-      Map<String,List<String>> encryptedPrivateKey = {};
-      List<String> privateKeyForUser = [];
-      for(dynamic id in participants_id){
-        privateKeyForUser =  await UserDatabase().addChatToUser(id,chat_id,privateKey);
-        encryptedPrivateKey[id] = privateKeyForUser;
+
+    Future<Map<String,String>> addChatToUsers(List<dynamic> participants_id,dynamic chat_id) async {
+      String userPublicKey;
+      Map<String,String> userToKey = {};
+      for (dynamic id in participants_id) {
+        userPublicKey = await UserDatabase().addChatToUser(id, chat_id);
+        userToKey[id.toString()] = userPublicKey;
       }
-      await chats.doc(chat_id).update({
-        'GroupPrivateKey': encryptedPrivateKey,
-      });
+      return userToKey;
     }
 }

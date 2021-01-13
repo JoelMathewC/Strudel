@@ -1,11 +1,12 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:pointycastle/api.dart' as crypto;
+import 'package:strudel/Security/RSA.dart';
 
 class ChatClass{
   String name;
   String uid;
-  ChatClass({this.name,this.uid});
+  crypto.PrivateKey privateKey;
+  ChatClass({this.name,this.uid,this.privateKey});
 }
 
 class MessageClass{

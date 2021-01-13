@@ -5,6 +5,7 @@ import 'package:strudel/Database/ChatClass.dart';
 import 'package:strudel/Database/ChatDatabase.dart';
 import 'package:strudel/Database/UserDatabase.dart';
 import 'package:strudel/Screens/Loading.dart';
+import 'package:strudel/Security/RSA.dart';
 
 
 class ChatScreen extends StatefulWidget {
@@ -66,7 +67,7 @@ class _ChatScreenState extends State<ChatScreen> {
             if (doc['Chat_id'] == thisChat.uid) {
               if (doc['First'] == false) {
                 numOfMessages += 1;
-                MessageClass message = MessageClass(message: doc['Message'],
+                MessageClass message = MessageClass(message: RSA().dataDecrypt(doc['Message'][auth.FirebaseAuth.instance.currentUser.email],thisChat.privateKey),
                     time: doc['TimeStamp'],
                     messageOwner: doc['Owner'],
                     date: null);

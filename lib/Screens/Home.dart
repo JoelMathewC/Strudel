@@ -253,7 +253,7 @@ class _HomeState extends State<Home> {
                   return GestureDetector(
                     onTap: () async {
                       ChatClass selectedClass = ChatClass(
-                          name: chats[index].chatName, uid: chats[index].chatID);
+                          name: chats[index].chatName, uid: chats[index].chatID,privateKey: userPrivateKey);
                       Navigator.pushNamed(
                           context, ChatScreen.id, arguments: selectedClass).then((value) {
                             setState(() {

@@ -10,9 +10,13 @@ class ChatDatabase{
     final CollectionReference chatCollection = FirebaseFirestore.instance.collection('Chats');
 
 
-    Future<void> sendMessage(MessageClass message,String uid) async{
+    Future<void> sendMessage(MessageClass message,String uid,Map<dynamic,dynamic> publicKeysOfUsers) async{
+      Map<String,List<String>> mapUserToEncryptMessage = {};
+      publicKeysOfUsers.forEach((key, value) {
+        mapUserToEncryptMessage[key] = RSA().dataEncrypt(message.message, RSA().parsePublicKeyFromPem(value));
+      });
       await chats.add({
-        'Message': message.message,
+        'Message':  mapUserToEncryptMessage,
         'Owner': message.messageOwner,
         'TimeStamp': message.time,
         'First':false,
@@ -46,5 +50,13 @@ class ChatDatabase{
         userToKey[id.toString()] = userPublicKey;
       }
       return userToKey;
+    }
+
+    Future<Map<dynamic,dynamic>> returnMembersPublicKeys(String id)async{
+        Map<dynamic,dynamic> map = {};
+        await chatCollection.doc(id).get().then((DocumentSnapshot documentSnapshot){
+          map = documentSnapshot.data()['PublicKeys'];
+        });
+        return map;
     }
 }

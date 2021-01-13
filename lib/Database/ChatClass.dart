@@ -6,7 +6,8 @@ class ChatClass{
   String name;
   String uid;
   crypto.PrivateKey privateKey;
-  ChatClass({this.name,this.uid,this.privateKey});
+  Map<dynamic,dynamic> PublicKeys;
+  ChatClass({this.name,this.uid,this.privateKey,this.PublicKeys});
 }
 
 class MessageClass{

@@ -45,11 +45,11 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final ChatClass thisChat = ModalRoute.of(context).settings.arguments;
-
     double height = MediaQuery. of(context). size. height;
     double width = MediaQuery. of(context). size. width;
     int numOfMessages = 0;
     List<MessageClass> messages = [];
+
 
 
     return loading ? Loading(): StreamBuilder(
@@ -223,7 +223,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 time: Timestamp.fromDate(DateTime.now()));
                             messageController.clear();
                             ChatDatabase().sendMessage(
-                                messageToSend, thisChat.uid);
+                                messageToSend, thisChat.uid,thisChat.PublicKeys);
                           },
                               elevation: 2.0,
                               fillColor: Theme
